@@ -45,6 +45,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 1. Create a react/next.js project (static)
 2. Implement this function
+
 ```javascript
    function airdropERC20(
         address tokenAddress, //ERC20 token to be airdroped
@@ -53,6 +54,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
         uint256 totalAmount
         )
 ```
+
 3. Deploy to Fleek
 
 ---
@@ -90,7 +92,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - 🧾 Input or Upload recipient addresses (CSV or textarea)
 - 🪙 Airdrop ERC20 tokens in a batch (gas-optimized)
 - 📊 Simulate transaction before sending
-  
 - 📦 Track transaction status (loading, success, error)
 - 🔁 Reset state and safely handle form validation
 - ✅ Handles invalid or duplicate addresses gracefully
@@ -100,6 +101,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ## 🎯 Focus Areas
 
 ### 🧠 Web3 Integration
+
 - Smart contract interaction via Wagmi & Viem
 - Secure wallet connection and transaction signing
 - Live contract reads (e.g., decimals, balances)
@@ -108,20 +110,23 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - Wallet connection flow with custom hooks
 
 ### 🎨 UI/UX Design
+
 - Designed for clarity and speed in complex Web3 flows (Clear user flow from input to confirmation)
 - Clean input validation, visual feedback, and loading states
-- Modular components using Tailwind 
+- Modular components using Tailwind
 - Transaction feedback via toasts and loaders
 - Fully responsive layout, accessible design
 
 ### 🔐 Security & Gas Awareness
+
 - UI supports safe usage of a gas-optimized Huff contract
 - Shows token totals before signing to avoid mistakes
 - Statically hosted frontend — no backend to compromise
 
 ### Frontend Code Quality
-  - Modular structure (hooks, components, utils)
-  - Linting, formatting, and reusable logic
+
+- Modular structure (hooks, components, utils)
+- Linting, formatting, and reusable logic
 
 ---
 
@@ -170,7 +175,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ---
 
-## TO DO: 
+## TO DO:
+
 - Add a project walkthrough script
 - Build the pie chart + token breakdown
 - Design your PDF or Loom demo flow
