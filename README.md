@@ -44,7 +44,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ---
 
 1. Create a react/next.js project (static)
-2. Implement this function
+2. Connect wallet 
+  - configure wagmi, rainbowKit 
+  - wrap app in providers 
+  - add button UI
+3. Implement this function
 
 ```javascript
    function airdropERC20(
@@ -68,15 +72,14 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - **Testing**: Anvil (Foundry) for local testnet
 - **Deployment**: Fleek (IPFS-based static hosting)
 - **Data Viz (optional)**: Recharts (for token distribution)
-- **Linting & Formatting**: ESLint, Prettier
 - **Performance**: Lighthouse reports
-- **Linting/Formatting**: ESLint · Prettier
+- **Linting & Formatting**: ESLint · Prettier
 
 ---
 
 ## 🔑 Core Features
 
-- 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit)
+- 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit) 
 - 🌐 Support for multiple chains: Mainnet, Optimism, Arbitrum, ZK Sync, Base, Sepolia, Anvil
 - 📥 Input token address + recipient addresses + amounts (manually or via CSV or textarea)
 - 🔎 Dynamic token data fetching (name, decimals)
