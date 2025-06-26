@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from './providers';
+import { ThemeProvider } from 'next-themes';
+import Header from './components/Header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +35,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Providers>
+            <Header />
+            {/* Main content area */}
+            <div className="max-w-6xl mx-auto px-4 py-8">{children}</div>
+            {/* Footer or additional components can go here */}
+            <div className="h-16" /> {/* Spacer for footer */}
+            {/* Footer can be added here if needed */}
+            {/* Example: <Footer /> */}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

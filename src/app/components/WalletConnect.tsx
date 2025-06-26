@@ -3,10 +3,16 @@ import '@rainbow-me/rainbowkit/styles.css';
 
 const WalletConnect = () => {
   return (
-    <div>
-      <h2>Connect Your Wallet</h2>
-      <ConnectButton />
-    </div>
+    <ConnectButton
+      accountStatus={{
+        smallScreen: 'avatar',
+        largeScreen: 'full',
+      }}
+      showBalance={{
+        smallScreen: false,
+        largeScreen: true,
+      }}
+    />
   );
 };
 
