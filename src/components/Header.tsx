@@ -57,7 +57,7 @@ export default function Header() {
           >
             <FaGithub
               size={28}
-              className=" hover:text-gray-500 transition-all"
+              className=" hover:text-gray-500 hover:scale-110 transition-all"
             />
           </Link>
 

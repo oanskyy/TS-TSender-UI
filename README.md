@@ -44,10 +44,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 ---
 
 1. Create a react/next.js project (static)
-2. Connect wallet 
-  - configure wagmi, rainbowKit 
-  - wrap app in providers 
-  - add button UI
+2. Connect wallet
+
+- feat: configure wagmi, rainbowKit
+- feat: wrap app in providers
+- feat: add connect wallet button UI
+- (style: add button in header)
+- style: add airdrop form with shadcn ui form, input, textarea
+- style: add split text motion animation
+
 3. Implement this function
 
 ```javascript
@@ -79,7 +84,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## 🔑 Core Features
 
-- 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit) 
+- 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit)
 - 🌐 Support for multiple chains: Mainnet, Optimism, Arbitrum, ZK Sync, Base, Sepolia, Anvil
 - 📥 Input token address + recipient addresses + amounts (manually or via CSV or textarea)
 - 🔎 Dynamic token data fetching (name, decimals)
