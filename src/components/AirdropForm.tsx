@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { chainsToTSender, tsenderAbi, erc20Abi } from '@/constans';
+import { useChainId } from 'wagmi';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -35,6 +38,10 @@ type FormValues = z.infer<typeof FormSchema>;
 // The form will use this schema to validate the inputs before submission
 
 export default function AirdropForm() {
+  const chainId = useChainId();
+  // Get the current chain ID using wagmi's useChainId hook
+  // This will allow us to dynamically adjust the contract addresses based on the selected chain
+
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -71,6 +78,18 @@ export default function AirdropForm() {
   const totalTokens = totalWei / 1e18;
 
   function onSubmit(data: FormValues) {
+    console.log('Form submitted:', data);
+
+    // 1. Approve our tsender contract to send our tokens
+    // 1. a. If already approved, move to step 2
+    // 2. Call the airdrop function on our tsender contract with the token address, recipients, and amounts
+    // 3. wait for the transaction to be mined
+    // 4. Show a success message with the transaction hash
+    // 5. Handle any errors that may occur during the process
+
+    const tsenderAddress = chainsToTSender[chainId]['tsender'];
+    console.log('Using tsender contract address:', tsenderAddress);
+
     toast('Submitted values:', {
       description: (
         <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
