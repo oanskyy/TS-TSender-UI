@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   keywords:
     'TSender, Web3, ERC20, airdrop, gas-optimized, Huff, smart contract, blockchain, wallet integration, responsive UI',
   authors: [{ name: 'oanskyy' }],
-  themeColor: '#0070f3', // Choose your app’s primary color 💙
 };
 
 export default function RootLayout({
@@ -31,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
