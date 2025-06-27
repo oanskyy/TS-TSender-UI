@@ -1,5 +1,7 @@
 # 🚀 TSender UI — Gas-Optimized ERC20 Airdrop Dashboard
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e057407b-7c49-45fe-9c0e-cd9eba70924d/deploy-status)](https://app.netlify.com/projects/token-airdrop-sender-202506/deploys)
+
 A full-stack Web3 dashboard that replicates the functionality of [`t-sender.com`](https://t-sender.com), allowing admins to airdrop ERC20 tokens to multiple recipients via a highly gas-optimized smart contract (written in Huff). Built with modular Web3 hooks, secure wallet integration, and a responsive, user-focused interface.
 
 ---
