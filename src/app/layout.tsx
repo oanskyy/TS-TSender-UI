@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   keywords:
     'TSender, Web3, ERC20, airdrop, gas-optimized, Huff, smart contract, blockchain, wallet integration, responsive UI',
   authors: [{ name: 'oanskyy' }],
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
