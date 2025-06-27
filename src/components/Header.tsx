@@ -2,9 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import WalletConnect from './WalletConnect';
 import Link from 'next/link';
 import { FaGithub } from 'react-icons/fa';
+import dynamic from 'next/dynamic';
+const WalletConnectDynamic = dynamic(() => import('./WalletConnect'), {
+  ssr: false,
+});
+// It's not a hack—it’s the correct and recommended solution for scenarios like this
+// “If a component crashes on the server because it assumes it's in the browser, I disable SSR for that component entirely using dynamic imports.”
+// This pattern is used by Vercel themselves, in their docs and examples.
+// With no SSR
+// To dynamically load a component on the client side, you can use the ssr option to disable server-rendering. This is useful if an external dependency or component relies on browser APIs like window.
+// ✅ Prevents SSR errors (indexedDB, window are undefined)
+// ✅ Keeps server render fast and clean
+// ✅ Defers heavy/browser-specific logic to client only
+// ✅ Fully supported and documented by Vercel
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -74,7 +86,8 @@ export default function Header() {
         </nav>
 
         <div className="flex-shrink-0">
-          <WalletConnect />
+          {/* <WalletConnect /> */}
+          <WalletConnectDynamic />
         </div>
       </div>
     </motion.header>
