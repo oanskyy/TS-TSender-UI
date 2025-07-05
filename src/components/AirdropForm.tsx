@@ -8,6 +8,11 @@ import { z } from 'zod';
 import { chainsToTSender, tsenderAbi, erc20Abi } from '@/constans';
 import { useChainId, useAccount, useConfig } from 'wagmi';
 import { readContract } from '@wagmi/core';
+import {
+  calculateAmountList,
+  calculateTotalWei,
+  calculateTotalTokens,
+} from '@/lib/calculateTotal';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +25,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useMemo } from 'react';
 
 const FormSchema = z.object({
   tokenAddress: z.string().min(2, { message: 'Token address is required.' }),
@@ -71,19 +77,20 @@ export default function AirdropForm() {
   const watchedAmounts = useWatch({ control: form.control, name: 'amounts' });
   // Watch the amounts field to calculate total tokens
   // This will update automatically as the user types
-  // or changes the amounts input
+  // Use useWatch from react-hook-form to get the current value of the amounts field
 
-  const amountList = watchedAmounts
-    ?.split(/[\n,]+/)
-    .map((a) => a.trim())
-    .filter(Boolean)
-    .map(Number)
-    .filter((n) => !isNaN(n));
-  // Split by newline or comma, trim whitespace, filter out empty strings,
-  // convert to numbers, and filter out NaN values
+  const amountList = useMemo(
+    () => calculateAmountList(watchedAmounts),
+    [watchedAmounts],
+  );
+  const totalWei = useMemo(() => calculateTotalWei(amountList), [amountList]);
+  const totalTokens: number = useMemo(
+    () => calculateTotalTokens(totalWei),
+    [totalWei],
+  );
 
-  const totalWei = amountList?.reduce((acc, cur) => acc + cur, 0) || 0;
-  const totalTokens = totalWei / 1e18;
+  // Calculate the total amount in wei
+  // This will be used to display the total amount in the transaction details section
 
   async function getApprovedAmount(
     tSenderAddress: string | null,
