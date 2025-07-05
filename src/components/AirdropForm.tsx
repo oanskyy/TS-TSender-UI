@@ -6,7 +6,8 @@ import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { chainsToTSender, tsenderAbi, erc20Abi } from '@/constans';
-import { useChainId } from 'wagmi';
+import { useChainId, useAccount, useConfig } from 'wagmi';
+import { readContract } from '@wagmi/core';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +28,6 @@ const FormSchema = z.object({
     .min(1, { message: 'At least one recipient is required.' }),
   amounts: z.string().min(1, { message: 'At least one amount is required.' }),
 });
-
 type FormValues = z.infer<typeof FormSchema>;
 // Define the form schema using zod
 // This schema will validate the form inputs
@@ -39,8 +39,16 @@ type FormValues = z.infer<typeof FormSchema>;
 
 export default function AirdropForm() {
   const chainId = useChainId();
+  const { address: walletAddress } = useAccount();
+  // walletAddress is the connected user's address
+  const config = useConfig();
+
   // Get the current chain ID using wagmi's useChainId hook
   // This will allow us to dynamically adjust the contract addresses based on the selected chain
+
+  // ✅ 3. Read allowance with correct typing
+  // ✔️ Uses walletAddress dynamically
+  // ✔️ Ensures enabled only when all values exist
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -77,18 +85,49 @@ export default function AirdropForm() {
   const totalWei = amountList?.reduce((acc, cur) => acc + cur, 0) || 0;
   const totalTokens = totalWei / 1e18;
 
-  function onSubmit(data: FormValues) {
+  async function getApprovedAmount(
+    tSenderAddress: string | null,
+  ): Promise<number> {
+    if (!tSenderAddress || !walletAddress) {
+      toast.error('Please connect your wallet and select a token address.');
+      return 0; // Return 0 if no address is provided
+    }
+
+    //read from the chain to get the approved amount
+    try {
+      const response = await readContract(config, {
+        abi: erc20Abi,
+        // TODO: Use the correct token address
+        address: form.getValues('tokenAddress') as `0x${string} | undefined `,
+        functionName: 'allowance',
+        args: [walletAddress, tSenderAddress as `0x${string}`],
+      });
+      console.log('readContract allowance response:', response);
+
+      // Convert the result to a number (assuming it's in wei)
+      return Number(response);
+    } catch (error) {
+      console.error('Error reading allowance:', error);
+      toast.error('Failed to read allowance. Please try again.');
+      return 0; // Return 0 in case of an error
+    }
+  }
+
+  async function onSubmit(data: FormValues) {
     console.log('Form submitted:', data);
 
-    // 1. Approve our tsender contract to send our tokens
     // 1. a. If already approved, move to step 2
-    // 2. Call the airdrop function on our tsender contract with the token address, recipients, and amounts
+    // 1. b. Approve our tsender contract to send our tokens
+    // 2. Call the airdrop function on our tsender contract (with params: token address, recipients, and amounts)
     // 3. wait for the transaction to be mined
     // 4. Show a success message with the transaction hash
     // 5. Handle any errors that may occur during the process
 
     const tsenderAddress = chainsToTSender[chainId]['tsender'];
+    const approvedAmount = await getApprovedAmount(tsenderAddress);
+    console.log('Approved amount:', approvedAmount);
     console.log('Using tsender contract address:', tsenderAddress);
+    console.log('ChainId', chainId, chainsToTSender[chainId]);
 
     toast('Submitted values:', {
       description: (
