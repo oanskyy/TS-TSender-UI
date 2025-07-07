@@ -4,10 +4,10 @@ export function calculateAmountList(
   if (!amounts) return [];
   return amounts
     .split(/[\n,]+/)
-    .map((a) => a.trim())
+    .map((amount) => amount.trim())
     .filter(Boolean)
     .map(Number)
-    .filter((n) => !isNaN(n));
+    .filter((nonnumeric) => !isNaN(nonnumeric));
 }
 
 export function calculateTotalWei(amountList: number[]): number {
