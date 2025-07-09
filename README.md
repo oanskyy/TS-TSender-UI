@@ -68,9 +68,41 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 3. Deploy to Fleek
 
-utils
-mock token address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 (token address)
-(receipents) 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+---
+
+## ⚙️ Contract Addresses
+
+| Contract        | Description                                               | Example Address                              |
+| --------------- | --------------------------------------------------------- | -------------------------------------------- |
+| **ERC20 Token** | The token you are airdropping. Must implement `approve`.  | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
+| **TSender**     | The airdrop contract that distributes tokens.             |
+|                 | (Address that will be able to spend token on your behalf) | `0x5FbDB2315678afecb367f032d93F642f64180aa3` |
+
+✅ **ERC20 Token** is any deployable token contract (Huff or Solidity).  
+✅ **TSender** is your airdrop smart contract that sends tokens in a batch.
+
+---
+
+✅ **How to check**
+
+**To confirm ERC20 token contract:**
+
+```bash
+cast call <TOKEN_ADDRESS> "name()(string)"
+cast call   "name()(string)"
+
+```
+
+\*\*To confirm TSender contract:
+
+```bash
+cast call <TSENDER_ADDRESS> "airdropERC20(address,address[],uint256[],uint256)()"
+cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,address[],uint256[],uint256)()"
+
+-----
+
+(receipents anvil acc1): 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+```
 
 ---
 
@@ -91,24 +123,21 @@ mock token address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 (token address)
 ## 🔑 Core Features
 
 - 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit)
-- 🌐 Support for multiple chains: Mainnet, Optimism, Arbitrum, ZK Sync, Base, Sepolia, Anvil
-- 📥 Input token address + recipient addresses + amounts (manually or via CSV or textarea)
+- 🌐 Supports multiple chains: Mainnet, Optimism, Arbitrum, ZK Sync, Base, Sepolia, Anvil
+- 📥 Inputs:
+  - Token address
+  - Recipient addresses
+  - Amounts (textarea or CSV)
 - 🔎 Dynamic token data fetching (name, decimals)
 - 📊 Live transaction preview (total in wei & formatted)
-- ✅ Step-by-step transaction execution:
-  - `approve` the token for TSender contract
+- ✅ Step-by-step execution:
+  - `approve` token spending for TSender contract
   - `airdrop` to multiple recipients
-- 🚨 Error handling for mismatched address/amounts and invalid formats
+- 🚨 Handles mismatched address/amount inputs with clear errors
 - 🧹 Clean, responsive, accessible UI built with Tailwind
-
-&&
-
-- 🧾 Input or Upload recipient addresses (CSV or textarea)
-- 🪙 Airdrop ERC20 tokens in a batch (gas-optimized)
-- 📊 Simulate transaction before sending
-- 📦 Track transaction status (loading, success, error)
-- 🔁 Reset state and safely handle form validation
-- ✅ Handles invalid or duplicate addresses gracefully
+- 🧪 **Testing**:
+  - Unit tests with Jest
+  - Planned E2E tests with Playwright
 
 ---
 
@@ -152,6 +181,8 @@ mock token address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 (token address)
 - [ ] 🔁 Batch pagination for >1,000 recipients (Add pagination or progress tracking for large lists)
 - [ ] 🔎 Optimistic UI feedback before confirmation
 - [ ] 🧠 Integrate The Graph for past airdrop history
+- [ ] Add a project walkthrough script
+- Design your PDF or Loom demo flow
 
 ---
 
@@ -181,16 +212,27 @@ mock token address: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 (token address)
 ## 📂 Project Structure (Simplified)
 
 /components → UI elements (buttons, form sections)
-/hooks → Custom Web3 logic (e.g., useAirdrop)
+/hooks → Custom Web3 logic (approve, airdrop)
 /pages → Next.js routes (index, success, etc.)
 /lib → Constants, utilities, config (RainbowKit)
-/public → Assets
+/public → Static assets
 /docs → Detailed tech overview
 
 ---
 
-## TO DO:
+### 🏁 **Deployment Note**
 
-- Add a project walkthrough script
-- Build the pie chart + token breakdown
-- Design your PDF or Loom demo flow
+⚠️ **Anvil is local only. For production:**
+
+- Deploy contracts to Sepolia or Mainnet
+- Update Wagmi config with production RPC URLs
+- Redeploy frontend to Netlify or Fleek
+
+---
+
+### 🙏 **Credits**
+
+- Built by **[@oanskyy]**
+- Inspired by [t-sender.com](https://t-sender.com) (gas optimization approach)
+
+---
