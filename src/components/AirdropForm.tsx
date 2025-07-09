@@ -258,10 +258,7 @@ export default function AirdropForm() {
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-600">Amount (tokens):</span>
-              <span className="font-mono text-right">
-                {/* {totalTokens.toFixed(4)} */}
-                {totalTokens}
-              </span>
+              <span className="font-mono text-right">{totalTokens}</span>
             </div>
           </div>
 
