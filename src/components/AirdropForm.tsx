@@ -118,36 +118,29 @@ export default function AirdropForm() {
         console.log(
           `Approval needed: Current ${approvedAmount}, Required ${total}`,
         );
-        // const approvalHash = await approveWriteAsync({
-        //   address: data.tokenAddress as `0x${string}`,
-        //   abi: erc20Abi,
-        //   functionName: 'approve',
-        //   args: [tsenderAddress, total],
-        // });
-        console.log('Calling approve with:', {
-          contract: data.tokenAddress,
-          spender: tsenderAddress,
-          amount: total.toString(),
-        });
+
         const approvalHash = await approveWriteAsync({
-          address: data.tokenAddress as `0x${string}`, // This must be your ERC20 token address
+          address: data.tokenAddress as `0x${string}`,
           abi: erc20Abi,
           functionName: 'approve',
           args: [tsenderAddress, total],
         });
+
         console.log('Approval tx hash:', approvalHash);
 
         const approvalReceipt = await waitForTransactionReceipt(config, {
           hash: approvalHash,
         });
+
         if (approvalReceipt.status !== 'success') {
           console.error('Approval tx failed:', approvalReceipt);
           toast.error('Approval transaction failed.');
           return;
         }
+
         console.log('Approval confirmed:', approvalReceipt);
       } else {
-        console.log('Sufficient allowance. Proceeding to airdrop.');
+        console.log('✅ Sufficient allowance. Skipping approve.');
       }
 
       // Proceed with the airdrop
