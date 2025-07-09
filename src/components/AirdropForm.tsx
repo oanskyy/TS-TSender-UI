@@ -60,8 +60,8 @@ export default function AirdropForm() {
     () => calculateTotalWei(amountList),
     [amountList],
   );
-  const totalTokens: number = useMemo(
-    () => calculateTotalTokens(totalAmountInWei),
+  const totalTokens: string = useMemo(
+    () => calculateTotalTokens(totalAmountInWei, 18),
     [totalAmountInWei],
   );
 
@@ -259,7 +259,8 @@ export default function AirdropForm() {
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-600">Amount (tokens):</span>
               <span className="font-mono text-right">
-                {totalTokens.toFixed(4)}
+                {/* {totalTokens.toFixed(4)} */}
+                {totalTokens}
               </span>
             </div>
           </div>
