@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, useWatch } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
-import { chainsToTSender, tsenderAbi, erc20Abi } from '@/constans';
-import { useChainId, useAccount, useConfig, useWriteContract } from 'wagmi';
-import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { chainsToTSender, erc20Abi, tsenderAbi } from '@/constans';
 import {
   calculateAmountList,
-  calculateTotalWei,
   calculateTotalTokens,
+  calculateTotalWei,
 } from '@/lib/calculateTotal';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { useForm, useWatch } from 'react-hook-form';
+import { toast } from 'sonner';
+import { useAccount, useChainId, useConfig, useWriteContract } from 'wagmi';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -82,6 +82,9 @@ export default function AirdropForm() {
       toast.error('Please connect your wallet and enter a token address.');
       return BigInt(0);
     }
+    console.log('🔑 Wallet Address (for approve & airdrop):', walletAddress);
+    console.log('🔑 Token Address (for allowance check):', tokenAddress);
+    console.log('🔑 Spender Address (TSender):', spender);
     try {
       const response = await readContract(config, {
         abi: erc20Abi,
@@ -102,13 +105,24 @@ export default function AirdropForm() {
     const tsenderAddress = chainsToTSender[chainId]['tsender'];
     const total = totalAmountInWei;
 
-    console.log('📝 Debug Info:');
-    console.log('Token Address (approve called on this):', data.tokenAddress);
-    console.log('TSender Address (spender):', tsenderAddress);
-    console.log('Wallet Address (from):', walletAddress);
-    console.log('Total Amount In Wei:', total.toString());
+    console.log('📝 [Step 0] Form submission debug info:');
+    console.log('🔗 Token Address:', data.tokenAddress);
+    console.log('🏹 TSender Address:', tsenderAddress);
+    console.log('👛 Wallet Address:', walletAddress);
+    console.log('💰 Total Amount In Wei:', total.toString());
 
+    //  1  Check the current token allowance: Read the amount the user (token owner) has already approved for our airdrop contract (spender).
+
+    // 2 Request approval if needed: If the current allowance is less than the total amount required for the airdrop, prompt the user to execute an approve transaction.
+
+    // 3 Execute the airdrop: Once sufficient allowance is confirmed, call the function on the airdrop contract to perform the token transfers.
     try {
+      // 🟢 Step 1: Check approval
+      // 🟢 Step 1: Check approval
+      // 🟢 Step 1: Check approval
+      console.log('🟢 [Step 1] Checking token allowance...');
+      console.log('🟢 [Step 1] Checking token allowance...');
+      console.log('🟢 [Step 1] Checking token allowance...');
       const approvedAmount = await getApprovedAmount(
         data.tokenAddress,
         tsenderAddress,
@@ -116,7 +130,7 @@ export default function AirdropForm() {
 
       if (approvedAmount < total) {
         console.log(
-          `Approval needed: Current ${approvedAmount}, Required ${total}`,
+          `🛑 [Step 1.1] Approval needed: Current ${approvedAmount}, Required ${total}`,
         );
 
         const approvalHash = await approveWriteAsync({
@@ -126,24 +140,29 @@ export default function AirdropForm() {
           args: [tsenderAddress, total],
         });
 
-        console.log('Approval tx hash:', approvalHash);
+        console.log('✅ [Step 1.2] Approval tx hash:', approvalHash);
 
         const approvalReceipt = await waitForTransactionReceipt(config, {
           hash: approvalHash,
         });
 
         if (approvalReceipt.status !== 'success') {
-          console.error('Approval tx failed:', approvalReceipt);
+          console.error('❌ [Step 1.3] Approval tx failed:', approvalReceipt);
           toast.error('Approval transaction failed.');
           return;
         }
 
-        console.log('Approval confirmed:', approvalReceipt);
+        console.log('🎉 [Step 1.3] Approval confirmed:', approvalReceipt);
       } else {
-        console.log('✅ Sufficient allowance. Skipping approve.');
+        console.log('✅ [Step 1] Sufficient allowance. Skipping approve.');
       }
 
-      // Proceed with the airdrop
+      // 🟢 Step 2: Airdrop
+      // 🟢 Step 2: Airdrop
+      // 🟢 Step 2: Airdrop
+      console.log('🚀 [Step 2] Sending airdrop transaction...');
+      console.log('🚀 [Step 2] Sending airdrop transaction...');
+      console.log('🚀 [Step 2] Sending airdrop transaction...');
       const recipientAddresses = data.recipients
         .split(/,|\n/)
         .map((s) => s.trim())
@@ -155,9 +174,15 @@ export default function AirdropForm() {
         .filter(Boolean);
 
       if (recipientAddresses.length !== amounts.length) {
-        toast.error('Number of recipients and amounts do not match.');
+        toast.error('❌ Number of recipients and amounts do not match.');
         return;
       }
+
+      console.log('👥 Recipient Addresses:', recipientAddresses);
+      console.log('💸 Amounts:', amounts);
+      console.log('💰 Total Amount:', total);
+      console.log('🔗 Token Address:', data.tokenAddress);
+      console.log('🏹 TSender Address:', tsenderAddress);
 
       const airdropHash = await sendWriteAsync({
         address: tsenderAddress as `0x${string}`,
@@ -165,21 +190,46 @@ export default function AirdropForm() {
         functionName: 'airdropERC20',
         args: [data.tokenAddress, recipientAddresses, amounts, total],
       });
-      console.log('Airdrop tx hash:', airdropHash);
 
+      console.log('✅ [Step 2.1] Airdrop tx hash:', airdropHash);
+      console.log('⏳ [Step 2.2] Waiting for airdrop confirmation...');
       const airdropReceipt = await waitForTransactionReceipt(config, {
         hash: airdropHash,
       });
+
       if (airdropReceipt.status !== 'success') {
-        console.error('Airdrop tx failed:', airdropReceipt);
-        toast.error('Airdrop transaction failed.');
+        console.error('❌ [Step 2.3] Airdrop tx failed:', airdropReceipt);
+        toast.error('❌ Airdrop transaction failed.');
         return;
+      } else {
+        console.log('🎉 [Step 2.3] Airdrop confirmed:', airdropReceipt);
+        console.log('✅ [Step 2] Airdrop successful!');
+        toast.success('Airdrop transaction sent! Waiting for confirmation...');
       }
-      console.log('Airdrop confirmed:', airdropReceipt);
-      toast.success('Airdrop successful!');
+
+      // 🟢 Step 3: Fetch recipient balance after airdrop
+      // 🟢 Step 3: Fetch recipient balance after airdrop
+      // 🟢 Step 3: Fetch recipient balance after airdrop
+      console.log('🔎 [Step 3] Checking recipient balance...');
+      console.log('🔎 [Step 3] Checking recipient balance...');
+      console.log('🔎 [Step 3] Checking recipient balance...');
+      for (const recipient of recipientAddresses) {
+        const balance = await readContract(config, {
+          abi: erc20Abi,
+          address: data.tokenAddress as `0x${string}`,
+          functionName: 'balanceOf',
+          args: [recipient],
+        });
+        console.log(
+          `💰 [Step 3.1] Recipient ${recipient} balance:`,
+          (balance as bigint).toString(),
+        );
+      }
+
+      toast.success('Airdrop successful! ✅');
     } catch (err) {
-      console.error('Transaction error:', err);
-      toast.error('Transaction failed. See console for details.');
+      console.error('❌ [ERROR] Transaction failed:', err);
+      toast.error('❌ Transaction failed. See console for details.');
     }
   }
 

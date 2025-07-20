@@ -44,10 +44,9 @@ export default function RootLayout({
             <Header />
             {/* Main content area */}
             <div className="max-w-6xl mx-auto px-4 py-8">{children}</div>
-            {/* Footer or additional components can go here */}
             <div className="h-16" /> {/* Spacer for footer */}
             {/* Footer can be added here if needed */}
-            {/* Example: <Footer /> */}
+            {/* <Footer /> */}
           </Providers>
         </ThemeProvider>
       </body>
