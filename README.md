@@ -28,15 +28,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
@@ -44,16 +35,17 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ---
+## 🎯 Project Objective
+ Build a front-end application to interact with the TSender smart contract. This contract facilitates airdropping ERC20 tokens to multiple recipients in a single transaction.
 
+## 🔧 Build Steps
 1. Create a react/next.js project (static)
 2. Connect wallet
 
 - feat: configure wagmi, rainbowKit
 - feat: wrap app in providers
 - feat: add connect wallet button UI
-- (style: add button in header)
 - style: add airdrop form with shadcn ui form, input, textarea
-- style: add split text motion animation
 
 3. Implement this function
 
@@ -66,7 +58,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
         )
 ```
 
-3. Deploy to Fleek
+4. Deploy to Fleek
 
 ---
 
@@ -75,10 +67,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 | Contract        | Description                                               | Example Address                              |
 | --------------- | --------------------------------------------------------- | -------------------------------------------- |
 | **ERC20 Token** | The token you are airdropping. Must implement `approve`.  | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
-| **TSender**     | The airdrop contract that distributes tokens.             |
+| **TSender**     | The airdrop smart contract that distributes tokens.       |
 |                 | (Address that will be able to spend token on your behalf) | `0x5FbDB2315678afecb367f032d93F642f64180aa3` |
 
-✅ **ERC20 Token** is any deployable token contract (Huff or Solidity).  
+✅ **ERC20 Token** is any deployable token contract (Huff or Solidity). (ETH)
 ✅ **TSender** is your airdrop smart contract that sends tokens in a batch.
 
 ---
@@ -89,17 +81,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ```bash
 cast call <TOKEN_ADDRESS> "name()(string)"
-cast call   "name()(string)"
+cast call 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 "name()(string)"
 
 ```
 
-\*\*To confirm TSender contract:
+**To confirm TSender/Airdrop contract:**
 
 ```bash
 cast call <TSENDER_ADDRESS> "airdropERC20(address,address[],uint256[],uint256)()"
 cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,address[],uint256[],uint256)()"
-
------
 
 (receipents anvil acc1): 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 ```
@@ -117,6 +107,9 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,addre
 - **Data Viz (optional)**: Recharts (for token distribution)
 - **Performance**: Lighthouse reports
 - **Linting & Formatting**: ESLint · Prettier
+- **Testing**:
+  - Unit tests with Jest
+  - Planned E2E tests with Playwright
 
 ---
 
@@ -131,13 +124,10 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,addre
 - 🔎 Dynamic token data fetching (name, decimals)
 - 📊 Live transaction preview (total in wei & formatted)
 - ✅ Step-by-step execution:
-  - `approve` token spending for TSender contract
+  - `approve` token spending for TSender(Airdrop)(Huff) smart contract
   - `airdrop` to multiple recipients
 - 🚨 Handles mismatched address/amount inputs with clear errors
 - 🧹 Clean, responsive, accessible UI built with Tailwind
-- 🧪 **Testing**:
-  - Unit tests with Jest
-  - Planned E2E tests with Playwright
 
 ---
 
@@ -175,37 +165,95 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,addre
 
 ## 📈 Planned Improvements
 
-- [ ] 📊 Pie chart showing % token distribution (Recharts + Tailwind)
-- [ ] 🧠 Address validation & ENS resolution support for recipient list
-- [ ] 🗂 Save receipents address lists locally or to IPFS(localStorage or IPFS)
-- [ ] 🔁 Batch pagination for >1,000 recipients (Add pagination or progress tracking for large lists)
-- [ ] 🔎 Optimistic UI feedback before confirmation
-- [ ] 🧠 Integrate The Graph for past airdrop history
-- [ ] Add a project walkthrough script
-- Design your PDF or Loom demo flow
+---
+
+### 🔒 Security Checklist (Common Web3 Pitfalls)
+
+- [ ] ✅ **Input Sanitization**
+  - [ ] Validate addresses (EIP-55 checksum)
+  - [ ] Sanitize all form inputs
+  - [ ] Handle malformed CSV uploads safely
+
+- [ ] ✅ **Wallet Interaction Safety**
+  - [ ] Use `preparedWriteContract` (wagmi)
+  - [ ] Check for wallet connection before enabling form
+  - [ ] Disable send button during TX
+
+- [ ] ✅ **Smart Contract Precautions**
+  - [ ] Check token allowance before `airdrop()`
+  - [ ] Show gas estimate before confirmation
+  - [ ] Graceful error messages on `revert`
+
+- [ ] ✅ **Sensitive Data Handling**
+  - [ ] Avoid logging wallet addresses or TX hashes unnecessarily
+  - [ ] Don’t persist user data unless encrypted
+
+- [ ] ✅ **Read-Only Queries**
+  - [ ] Use `publicClient.readContract` for non-sensitive reads
+  - [ ] Prefer event listeners / The Graph over polling
+
+- [ ] ✅ **User Safety UX**
+  - [ ] Warn on unsupported networks
+  - [ ] Show token symbol, icon, and decimals clearly
+  - [ ] Display connected chain/network name visibly
+
+- [ ] ✅ **Deployment Hygiene**
+  - [X] Store API keys in `.env.local`
+  - [X] Never expose private keys or secrets client-side
 
 ---
 
-## ⚡ Bonus Enhancements (TBD)
+### 🔁 Performance & Scaling
 
-- 📊 **Charts / Token Breakdown**  
-  Add Recharts pie chart showing how tokens are split per recipient or wallet group.
+- [ ] Optimistic UI feedback (e.g. "Sending..." before confirmation)
+- [ ] Progress tracker for large sends
+- [ ] Pagination or batching for >1,000 recipients
 
-- 🎨 **UI Preview (PDF or Figma-style)**  
-  Export UI screens as a PDF (like a Figma design handoff) to showcase clean visual structure.
+### 🧠 Recipient Address Management
 
-- 🎥 **Loom Walkthrough**  
-  Record a short (1–2 min) Loom video demoing:
-  - Wallet connect → input → airdrop → confirmation
+- [ ] ENS name resolution
+- [ ] Address validation (checksum + format)
+- [ ] Save recipient lists
+  - [ ] Option 1: `localStorage`
+  - [ ] Option 2: IPFS
 
-- 🚦 **Lighthouse Report**  
-  Include a screenshot of Lighthouse scores for:
-  - Performance
-  - Accessibility
-  - Best Practices
-  - SEO
+---
 
-- 🔒 **Security checklist based on common Web3 pitfalls**
+### 📊 Analytics & Token Insights
+
+- [ ] **Pie Chart (Recharts + Tailwind)**
+  - [ ] Show % token distribution per recipient
+  - [ ] Optional: Group wallets by category
+
+---
+
+### 📚 Airdrop History & Analytics
+
+- [ ] Integrate **The Graph** for historical airdrop data
+  - [ ] Display previous distributions
+  - [ ] Link to transaction explorer (e.g. Etherscan)
+
+---
+
+### 🎥 Project Demo & Documentation
+
+- [ ] Write walkthrough script
+- [ ] Record Loom video (1–2 min)
+  - [ ] Wallet connect
+  - [ ] Input form
+  - [ ] Submit → TX confirmation
+- [ ] Design PDF or visual flow (Figma-style)
+
+---
+
+### 🚦 UX & Performance Audit
+
+- [ ] Run Lighthouse Audit
+  - [ ] Performance
+  - [ ] Accessibility
+  - [ ] Best Practices
+  - [ ] SEO
+- [ ] Include audit screenshot or score summary in docs
 
 ---
 
