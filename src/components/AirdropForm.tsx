@@ -1,12 +1,8 @@
 /* eslint-disable no-console */
 'use client';
 
+import { useMemo } from 'react';
 import { chainsToTSender, erc20Abi, tsenderAbi } from '@/constans';
-import {
-  calculateAmountList,
-  calculateTotalTokens,
-  calculateTotalWei,
-} from '@/lib/calculateTotal';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { readContract, waitForTransactionReceipt } from '@wagmi/core';
 import { useForm, useWatch } from 'react-hook-form';
@@ -14,6 +10,11 @@ import { toast } from 'sonner';
 import { useAccount, useChainId, useConfig, useWriteContract } from 'wagmi';
 import { z } from 'zod';
 
+import {
+  calculateAmountList,
+  calculateTotalTokens,
+  calculateTotalWei,
+} from '@/lib/calculateTotal';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -25,7 +26,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useMemo } from 'react';
 
 const FormSchema = z.object({
   tokenAddress: z.string().min(2, { message: 'Token address is required.' }),
@@ -234,12 +234,12 @@ export default function AirdropForm() {
   }
 
   return (
-    <div className="w-full max-w-2xl space-y-8 mx-auto">
+    <div className="mx-auto w-full max-w-2xl space-y-8">
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">
           Token Airdrop Sender
         </h1>
-        <p className="italic text-left hidden text-zinc-500 md:block">
+        <p className="hidden text-left text-zinc-500 italic md:block">
           The most gas efficient airdrop contract on earth, built in huff 🐎
         </p>
       </header>
@@ -296,19 +296,19 @@ export default function AirdropForm() {
             )}
           />
 
-          <div className="rounded-lg border p-4 bg-muted space-y-2">
+          <div className="bg-muted space-y-2 rounded-lg border p-4">
             <h2 className="text-sm font-medium text-zinc-600">
               Transaction Details
             </h2>
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-600">Amount (wei):</span>
-              <span className="font-mono text-right">
+              <span className="text-right font-mono">
                 {totalAmountInWei.toString()}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-600">Amount (tokens):</span>
-              <span className="font-mono text-right">{totalTokens}</span>
+              <span className="text-right font-mono">{totalTokens}</span>
             </div>
           </div>
 
@@ -323,10 +323,10 @@ export default function AirdropForm() {
           </Button>
 
           {approveError && (
-            <p className="text-red-500 text-sm">{approveError.message}</p>
+            <p className="text-sm text-red-500">{approveError.message}</p>
           )}
           {sendError && (
-            <p className="text-red-500 text-sm">{sendError.message}</p>
+            <p className="text-sm text-red-500">{sendError.message}</p>
           )}
         </form>
       </Form>
