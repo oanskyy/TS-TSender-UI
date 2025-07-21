@@ -136,6 +136,7 @@ export default function AirdropForm() {
 
       // 🟢 Step 2: Airdrop
       console.log('🚀🚀🚀 [Step 2] -- Sending airdrop transaction...');
+      toast.info('🚀 Sending airdrop transaction...');
       const recipientAddresses = data.recipients
         .split(/,|\n/)
         .map((s) => s.trim())
@@ -168,6 +169,7 @@ export default function AirdropForm() {
 
       console.log('✅ [Step 2.1] Airdrop tx hash:', airdropHash);
       console.log('⏳ [Step 2.2] Waiting for airdrop confirmation...');
+      toast.info('⏳ Waiting for airdrop confirmation...');
       const airdropReceipt = await waitForTransactionReceipt(config, {
         hash: airdropHash,
       });
