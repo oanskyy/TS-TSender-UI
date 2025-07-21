@@ -8,7 +8,7 @@ export default function Home() {
   );
 
   return (
-    <div className="grid min-h-screen p-8 pb-20 gap-12 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="grid min-h-screen gap-12 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
       {/* Main content */}
       <AirdropForm />
     </div>

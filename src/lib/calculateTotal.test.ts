@@ -2,8 +2,8 @@
 
 import {
   calculateAmountList,
-  calculateTotalWei,
   calculateTotalTokens,
+  calculateTotalWei,
 } from './calculateTotal';
 
 describe('calculateAmountList', () => {

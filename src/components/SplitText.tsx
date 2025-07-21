@@ -1,8 +1,8 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { animate, stagger } from 'motion';
 import { splitText } from 'motion-plus';
-import { useEffect, useRef } from 'react';
 
 export default function SplitText() {
   const containerRef = useRef<HTMLDivElement>(null);

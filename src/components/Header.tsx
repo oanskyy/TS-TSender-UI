@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { FaGithub } from 'react-icons/fa';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { AnimatePresence, motion } from 'framer-motion';
+import { FaGithub } from 'react-icons/fa';
+
 const WalletConnectDynamic = dynamic(() => import('./WalletConnect'), {
   ssr: false,
 });
@@ -33,7 +34,7 @@ export default function Header() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -20, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="sticky top-0 z-50 h-20 backdrop-blur-sm bg-transparent overflow-hidden"
+      className="sticky top-0 z-50 h-20 overflow-hidden bg-transparent backdrop-blur-sm"
     >
       {/* Dot grid mask */}
       <AnimatePresence>
@@ -44,20 +45,17 @@ export default function Header() {
             animate={{ opacity: 0.35 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="absolute inset-0 pointer-events-none z-0
-              bg-[radial-gradient(#000_0.5px,transparent_0.5px)]
-              [background-size:6px_6px]
-              mix-blend-multiply"
+            className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(#000_0.5px,transparent_0.5px)] [background-size:6px_6px] mix-blend-multiply"
           />
         )}
       </AnimatePresence>
 
       {/* Bottom fade for smoother edge */}
-      <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-b from-transparent to-white dark:to-black pointer-events-none z-10" />
+      <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-10 h-6 bg-gradient-to-b from-transparent to-white dark:to-black" />
 
       {/* Navigation content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <nav className="flex items-center space-x-6 text-md text-gray-800 dark:text-gray-200 font-medium">
+      <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <nav className="text-md flex items-center space-x-6 font-medium text-gray-800 dark:text-gray-200">
           {/* Logo placeholder */}
           <span className="font-bold tracking-tight">TSender</span>
           {/* GitHub link */}
@@ -65,11 +63,11 @@ export default function Header() {
             href="https://github.com/oanskyy/TS-TSender-UI"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-800 hover:text-black dark:text-gray-300 dark:hover:text-white transition-colors"
+            className="text-gray-800 transition-colors hover:text-black dark:text-gray-300 dark:hover:text-white"
           >
             <FaGithub
               size={28}
-              className=" hover:text-gray-500 hover:scale-110 transition-all"
+              className="transition-all hover:scale-110 hover:text-gray-500"
             />
           </Link>
 

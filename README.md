@@ -149,19 +149,20 @@ Deploy this static frontend to:
 </details>
 
 ---
+
 ## ⚙️ Supported Chains & Deployed TSender Contracts
 
 This dApp supports multiple EVM chains where the TSender airdrop smart contract has already been deployed.
 
-| Chain             | Chain ID   | TSender Address                                  | Explorer Link                                                                 |
-|------------------|------------|--------------------------------------------------|--------------------------------------------------------------------------------|
-| Ethereum Mainnet | 1          | `0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821`     | [Etherscan](https://etherscan.io/address/0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821)     |
-| Optimism         | 10         | `0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa`     | [Optimistic Etherscan](https://optimistic.etherscan.io/address/0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa) |
-| Arbitrum One     | 42161      | `0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19`     | [Arbiscan](https://arbiscan.io/address/0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19)       |
-| Base             | 8453       | `0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa`     | [BaseScan](https://basescan.org/address/0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa)      |
-| zkSync Era       | 324        | `0x7e645Ea4386deb2E9e510D805461aA12db83fb5E`     | [zkSync Explorer](https://explorer.zksync.io/address/0x7e645Ea4386deb2E9e510D805461aA12db83fb5E) |
-| Sepolia Testnet  | 11155111   | `0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a`     | [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a) |
-| Anvil (Local)    | 31337      | `0x5FbDB2315678afecb367f032d93F642f64180aa3`     | Local only                                                                     |
+| Chain            | Chain ID | TSender Address                              | Explorer Link                                                                                              |
+| ---------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Ethereum Mainnet | 1        | `0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821` | [Etherscan](https://etherscan.io/address/0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821)                       |
+| Optimism         | 10       | `0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa` | [Optimistic Etherscan](https://optimistic.etherscan.io/address/0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa) |
+| Arbitrum One     | 42161    | `0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19` | [Arbiscan](https://arbiscan.io/address/0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19)                         |
+| Base             | 8453     | `0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa` | [BaseScan](https://basescan.org/address/0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa)                        |
+| zkSync Era       | 324      | `0x7e645Ea4386deb2E9e510D805461aA12db83fb5E` | [zkSync Explorer](https://explorer.zksync.io/address/0x7e645Ea4386deb2E9e510D805461aA12db83fb5E)           |
+| Sepolia Testnet  | 11155111 | `0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a` | [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a)       |
+| Anvil (Local)    | 31337    | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | Local only                                                                                                 |
 
 ---
 
