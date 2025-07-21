@@ -8,7 +8,16 @@ A full-stack Web3 dashboard that replicates the functionality of [`t-sender.com`
 
 ### 🎥 Demo (Approve & Airdrop Flow)
 
-![tsender-demo](./screenshots/tsender-demo.gif)
+<p align="center">
+  <img
+    src="./screenshots/tsender-demo.gif"
+    alt="TSender Demo Flow"
+    width="600"
+    style="border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: inline-block;"
+    onmouseover="this.style.transform='scale(1.02)'"
+    onmouseout="this.style.transform='scale(1)'"
+  />
+</p>
 
 > 🖼️ This shows the full flow:
 >
@@ -60,15 +69,104 @@ This mimics the functionality of platforms like t-sender.com and demonstrates sm
 
 ### Airdrop Form (Pre-submit)
 
-![TSender UI Form](./screenshots/form.png)
+<p align="center">
+  <img
+    src="./screenshots/form.png"
+    alt="Airdrop Form Screenshot"
+    width="600"
+    style="border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: inline-block;"
+    onmouseover="this.style.transform='scale(1.02)'"
+    onmouseout="this.style.transform='scale(1)'"
+  />
+</p>
 
 ### MetaMask Approval (Approve Token Spend)
 
-![MetaMask Approve](./screenshots/approveOanskyToken.png)
+<p align="center">
+  <img
+    src="./screenshots/approveOanskyToken.png"
+    alt="MetaMask Approve Screenshot"
+    width="600"
+    style="border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: inline-block;"
+    onmouseover="this.style.transform='scale(1.02)'"
+    onmouseout="this.style.transform='scale(1)'"
+  />
+</p>
 
 ### MetaMask TX Confirmation (Airdrop)
 
-![MetaMask Airdrop](./screenshots/airdrop-tx-SKY.png)
+<p align="center">
+  <img
+    src="./screenshots/airdrop-tx-SKY.png"
+    alt="MetaMask TX Confirmation Screenshot"
+    width="600"
+    style="border-radius: 12px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease; display: inline-block;"
+    onmouseover="this.style.transform='scale(1.02)'"
+    onmouseout="this.style.transform='scale(1)'"
+  />
+</p>
+
+---
+
+## ⚙️ Supported Chains & Deployed TSender Contracts
+
+This dApp supports multiple EVM chains where the TSender airdrop smart contract has already been deployed.
+
+| Chain            | Chain ID | TSender Address                              | Explorer Link                                                                                              |
+| ---------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Ethereum Mainnet | 1        | `0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821` | [Etherscan](https://etherscan.io/address/0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821)                       |
+| Optimism         | 10       | `0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa` | [Optimistic Etherscan](https://optimistic.etherscan.io/address/0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa) |
+| Arbitrum One     | 42161    | `0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19` | [Arbiscan](https://arbiscan.io/address/0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19)                         |
+| Base             | 8453     | `0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa` | [BaseScan](https://basescan.org/address/0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa)                        |
+| zkSync Era       | 324      | `0x7e645Ea4386deb2E9e510D805461aA12db83fb5E` | [zkSync Explorer](https://explorer.zksync.io/address/0x7e645Ea4386deb2E9e510D805461aA12db83fb5E)           |
+| Sepolia Testnet  | 11155111 | `0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a` | [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a)       |
+| Anvil (Local)    | 31337    | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | Local only                                                                                                 |
+
+---
+
+### ✅ TSender Compatibility
+
+- ✅ This frontend supports **all chains listed above** via **RainbowKit + Wagmi**.
+- ✅ You can use **any standard ERC20 token** on these chains, including custom ones you deploy yourself.
+- ✅ All deployments use the **same TSender interface** — no frontend changes needed across networks.
+- ✅ As long as your ERC20 token implements `approve()` and `transferFrom()`, the UI works out of the box.
+- ✅ You can also deploy your own ERC20 token to these networks and use this dashboard to airdrop.
+
+---
+
+### ✅ Verified Deployment
+
+[![Sepolia – OanskyToken Verified](https://img.shields.io/badge/Deployed%20on-Sepolia-green?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
+
+- **Token**: `OanskyToken`
+- **Address**: [`0xC3F8ffA25823E768500F9361D872d2bc7d275fa1`](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
+- ✅ Supports full `approve()` → `airdropERC20()` flow
+- ✅ Fully tested with TSender on Sepolia
+
+---
+
+<details open>
+<summary>🚀 MVP Scope (Core Features Only)</summary>
+
+| Feature Area             | Feature Description                        | Status         |
+| ------------------------ | ------------------------------------------ | -------------- |
+| 🧠 Smart Contract Logic  | Connect wallet with RainbowKit             | ✅ Done        |
+|                          | Check ERC20 allowance via `readContract`   | ✅ Done        |
+|                          | Approve tokens via `writeContract`         | ✅ Done        |
+|                          | Trigger airdrop via `airdropERC20(...)`    | ✅ Done        |
+|                          | Show post-airdrop balances                 | 🚧 In Progress |
+|                          | Graceful error handling                    | 🚧 In Progress |
+| 🧾 Form & Input Handling | Use `shadcn/ui` with React Hook Form + Zod | ✅ Done        |
+|                          | CSV support for addresses + amounts        | 🚧 In Progress |
+|                          | Validate required fields                   | ✅ Done        |
+| 🔐 Wallet UX             | Disable form if wallet not connected       | 🚧 In Progress |
+|                          | Show connected network visibly             | ✅ Done        |
+|                          | Prevent double-submit during TX            | 🚧 In Progress |
+| 🌍 Deployment & Privacy  | Deploy to Fleek or Vercel/Netlify          | ✅ Done        |
+|                          | Store secrets in `.env.local`              | ✅ Done        |
+|                          | Avoid logging wallet addresses             | ✅ Done        |
+
+</details>
 
 ---
 
@@ -154,60 +252,6 @@ Deploy this static frontend to:
 
 ---
 
-## ⚙️ Supported Chains & Deployed TSender Contracts
-
-This dApp supports multiple EVM chains where the TSender airdrop smart contract has already been deployed.
-
-| Chain            | Chain ID | TSender Address                              | Explorer Link                                                                                              |
-| ---------------- | -------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Ethereum Mainnet | 1        | `0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821` | [Etherscan](https://etherscan.io/address/0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821)                       |
-| Optimism         | 10       | `0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa` | [Optimistic Etherscan](https://optimistic.etherscan.io/address/0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa) |
-| Arbitrum One     | 42161    | `0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19` | [Arbiscan](https://arbiscan.io/address/0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19)                         |
-| Base             | 8453     | `0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa` | [BaseScan](https://basescan.org/address/0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa)                        |
-| zkSync Era       | 324      | `0x7e645Ea4386deb2E9e510D805461aA12db83fb5E` | [zkSync Explorer](https://explorer.zksync.io/address/0x7e645Ea4386deb2E9e510D805461aA12db83fb5E)           |
-| Sepolia Testnet  | 11155111 | `0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a` | [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a)       |
-| Anvil (Local)    | 31337    | `0x5FbDB2315678afecb367f032d93F642f64180aa3` | Local only                                                                                                 |
-
----
-
-### ✅ TSender Compatibility
-
-- ✅ This frontend supports **all chains listed above** via **RainbowKit + Wagmi**.
-- ✅ You can use **any standard ERC20 token** on these chains, including custom ones you deploy yourself.
-- ✅ All deployments use the **same TSender interface** — no frontend changes needed across networks.
-- ✅ As long as your ERC20 token implements `approve()` and `transferFrom()`, the UI works out of the box.
-- ✅ You can also deploy your own ERC20 token to these networks and use this dashboard to airdrop.
-
----
-
-### ✅ Verified Deployment
-
-[![Sepolia – OanskyToken Verified](https://img.shields.io/badge/Deployed%20on-Sepolia-green?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
-
-- **Token**: `OanskyToken`
-- **Address**: [`0xC3F8ffA25823E768500F9361D872d2bc7d275fa1`](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
-- ✅ Supports full `approve()` → `airdropERC20()` flow
-- ✅ Fully tested with TSender on Sepolia
-
----
-
-## 🛠 Tech Stack
-
-- **Framework**: Next.js (React + TypeScript)
-- **Web3 Libraries**: Wagmi · Viem · Ethers.js · RainbowKit
-- **Styling**: Tailwind CSS
-- **State/Logic**: Custom React hooks · Utility functions
-- **Testing**: Anvil (Foundry) for local testnet
-- **Deployment**: Fleek (IPFS-based static hosting)
-- **Data Viz (optional)**: Recharts (for token distribution)
-- **Performance**: Lighthouse reports
-- **Linting & Formatting**: ESLint · Prettier
-- **Testing**:
-  - Unit tests with Jest
-  - Planned E2E tests with Playwright
-
----
-
 ## 🔑 Core Features
 
 - 🔐 Connect Wallet (MetaMask, WalletConnect via RainbowKit)
@@ -223,63 +267,6 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
   - `airdrop` to multiple recipients
 - 🚨 Handles mismatched address/amount inputs with clear errors
 - 🧹 Clean, responsive, accessible UI built with Tailwind
-
----
-
-## 🎯 Focus Areas
-
-### 🧠 Web3 Integration
-
-- Smart contract interaction via Wagmi & Viem
-- Secure wallet connection and transaction signing
-- Live contract reads (e.g., decimals, balances)
-- Multi-chain support with network switching
-- Optimized for minimal gas usage per batch
-- Wallet connection flow with custom hooks
-
-### 🎨 UI/UX Design
-
-- Designed for clarity and speed in complex Web3 flows (Clear user flow from input to confirmation)
-- Clean input validation, visual feedback, and loading states
-- Modular components using Tailwind
-- Transaction feedback via toasts and loaders
-- Fully responsive layout, accessible design
-
-### 🔐 Security & Gas Awareness
-
-- UI supports safe usage of a gas-optimized Huff contract
-- Shows token totals before signing to avoid mistakes
-- Statically hosted frontend — no backend to compromise
-
-### Frontend Code Quality
-
-- Modular structure (hooks, components, utils)
-- Linting, formatting, and reusable logic
-
----
-
-<details open>
-<summary>🚀 MVP Scope (Core Features Only)</summary>
-
-| Feature Area             | Feature Description                        | Status         |
-| ------------------------ | ------------------------------------------ | -------------- |
-| 🧠 Smart Contract Logic  | Connect wallet with RainbowKit             | ✅ Done        |
-|                          | Check ERC20 allowance via `readContract`   | ✅ Done        |
-|                          | Approve tokens via `writeContract`         | ✅ Done        |
-|                          | Trigger airdrop via `airdropERC20(...)`    | ✅ Done        |
-|                          | Show post-airdrop balances                 | 🚧 In Progress |
-|                          | Graceful error handling                    | ✅ Done        |
-| 🧾 Form & Input Handling | Use `shadcn/ui` with React Hook Form + Zod | ✅ Done        |
-|                          | CSV support for addresses + amounts        | 🚧 In Progress |
-|                          | Validate required fields                   | ✅ Done        |
-| 🔐 Wallet UX             | Disable form if wallet not connected       | ✅ Done        |
-|                          | Show connected network visibly             | ✅ Done        |
-|                          | Prevent double-submit during TX            | ✅ Done        |
-| 🌍 Deployment & Privacy  | Deploy to Fleek or Vercel                  | ✅ Done        |
-|                          | Store secrets in `.env.local`              | ✅ Done        |
-|                          | Avoid logging wallet addresses             | ✅ Done        |
-
-</details>
 
 ---
 
@@ -385,7 +372,51 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
 
 </details>
 
-</details>
+## </details>
+
+## 🛠 Tech Stack
+
+### 🧱 Framework & Language
+
+- **Framework**: Next.js (React + TypeScript)
+- **Styling**: Tailwind CSS
+
+### 🧠 Web3 Integration
+
+- **Libraries**: Wagmi · Viem · RainbowKit · Ethers.js
+- **Network Support**: Sepolia (testnet), Anvil (local)
+- **Smart Contract**: Gas-optimized Huff contract (TSender)
+- **Wallet Connection**: RainbowKit + custom hooks
+
+### 🧩 State & Logic
+
+- **Form Handling**: React Hook Form + Zod
+- **Logic**: Custom hooks for allowance, airdrop, approval
+- **Validation**: CSV + text input parsing
+
+### 🎯 Testing
+
+- ✅ **Unit Testing**: Jest
+- ⚙️ **Local Testnet**: Anvil (via Foundry)
+- 🔄 **Planned**: E2E testing with Playwright
+
+### 📦 Dev Experience
+
+- ✅ ESLint + Prettier
+- ✅ Husky pre-commit hooks (`lint-staged`, formatting)
+- ⏳ Planned: GitHub Actions for CI
+- ⏳ Planned: Performance audits with Lighthouse
+
+### 📊 Visualization (Optional)
+
+- ⏳ Planned: Recharts (token distribution graphs)
+
+### 🚀 Deployment
+
+- ✅ **Frontend**: Netlify (Live on Sepolia)
+- ⏳ Optional: Fleek (IPFS static hosting)
+
+---
 
 <details>
 <summary>📂 Project Structure (Simplified)</summary>
@@ -400,14 +431,6 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
 ```
 
 </details>
-
-### 🏁 **Deployment Note**
-
-⚠️ **Anvil is local only. For production:**
-
-- [x] Deploy contracts to Sepolia
-- [x] Update Wagmi config with production RPC URLs
-- [ ] Redeploy frontend to Netlify/Vercel or Fleek
 
 ---
 
