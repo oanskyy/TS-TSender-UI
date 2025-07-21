@@ -3,6 +3,7 @@
 
 import { useMemo } from 'react';
 import { chainsToTSender } from '@/constans';
+import { parseBigIntList, parseList } from '@/parseInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -131,15 +132,8 @@ export default function AirdropForm() {
       // 🟢 Step 2: Airdrop
       console.log('🚀🚀🚀 [Step 2] -- Sending airdrop transaction...');
       toast.info('🚀 Sending airdrop transaction...');
-      const recipientAddresses = data.recipients
-        .split(/,|\n/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-
-      const amounts = data.amounts
-        .split(/,|\n/)
-        .map((a) => BigInt(a.trim()))
-        .filter(Boolean);
+      const recipientAddresses = parseList(data.recipients);
+      const amounts = parseBigIntList(data.amounts);
 
       if (recipientAddresses.length !== amounts.length) {
         toast.error('❌ Number of recipients and amounts do not match.');
