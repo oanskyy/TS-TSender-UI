@@ -15,6 +15,7 @@ import {
   calculateTotalTokens,
   calculateTotalWei,
 } from '@/lib/calculateTotal';
+import { useAllowance } from '@/hooks/useAllowance';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -78,47 +79,15 @@ export default function AirdropForm() {
     error: sendError,
   } = useWriteContract();
 
-  // 2. Define Functions for Approval and Airdrop (Create the getApprovedAmount Helper Function)
-  async function getApprovedAmount(
-    erc20TokenAddress: string,
-    spenderAddress: string,
-  ) {
-    console.log('🔍 Checking token allowance...');
-    if (!erc20TokenAddress || !ownerWalletAddress) {
-      toast.error('Please connect your wallet and enter a token address.');
-      return BigInt(0);
-    }
-    console.log(
-      '🔑 Owner Wallet Address (for approve & airdrop):',
-      ownerWalletAddress,
-    );
-    console.log('🔑 Token Address (for allowance check):', erc20TokenAddress);
-    console.log('🔑 Spender Address (TSender):', spenderAddress);
-
-    // Read the current allowance from the ERC20 contract
-    console.log('📖 Reading allowance from contract...');
-    try {
-      const allowance = await readContract(config, {
-        abi: erc20Abi,
-        address: erc20TokenAddress as `0x${string}`,
-        functionName: 'allowance',
-        args: [ownerWalletAddress, spenderAddress],
-      });
-      console.log('✅ readContract allowance response:', allowance);
-      toast.success(`Allowance read successfully: ${allowance}`);
-      return allowance as bigint;
-    } catch (error) {
-      console.error('❌ Error reading allowance:', error);
-      toast.error('❌ Failed to read allowance. Please try again.');
-      return BigInt(0);
-    }
-  }
+  // Get the tsender contract address for the current chain
+  const tsenderAddress = chainsToTSender[chainId]?.tsender;
+  const { getAllowance } = useAllowance(
+    form.watch('tokenAddress'),
+    tsenderAddress,
+  );
+  const total = totalAmountInWei;
 
   async function onSubmit(data: FormValues) {
-    // Get the tsender contract address for the current chain
-    const tsenderAddress = chainsToTSender[chainId]?.tsender;
-    const total = totalAmountInWei;
-
     console.log('🟢🟢🟢 [Step 0] Form submission debug info:');
     console.log('🔗 Token Address:', data.tokenAddress);
     console.log('🔗 Current Chain ID:', chainId);
@@ -136,10 +105,7 @@ export default function AirdropForm() {
     try {
       // 🟢 Step 1: Check approval
       console.log('🟢🟢🟢 [Step 1] Checking token allowance...');
-      const approvedAmount = await getApprovedAmount(
-        data.tokenAddress,
-        tsenderAddress,
-      );
+      const approvedAmount = await getAllowance();
 
       if (approvedAmount < total) {
         console.log(
