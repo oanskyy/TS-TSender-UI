@@ -40,7 +40,7 @@ type FormValues = z.infer<typeof FormSchema>;
 export default function AirdropForm() {
   // 1. Get Required Data with Wagmi Hooks:
   const chainId = useChainId();
-  const { address: ownerWalletAddress } = useAccount();
+  const { address: ownerWalletAddress, isConnected } = useAccount();
   const config = useConfig();
 
   const form = useForm<FormValues>({
@@ -262,92 +262,98 @@ export default function AirdropForm() {
         </p>
       </header>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="tokenAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-600">Token Address</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="0x..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {!isConnected ? (
+        <p className="text-md rounded-md border border-yellow-300 bg-yellow-100 p-5 text-center text-yellow-700">
+          ⚠️ Please connect your wallet to access the airdrop form.
+        </p>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="tokenAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-600">Token Address</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="0x..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="recipients"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-600">Recipients</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="0x123..., 0x456... (comma or newline separated)"
-                    rows={4}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="recipients"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-600">Recipients</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="0x123..., 0x456... (comma or newline separated)"
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="amounts"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-zinc-600">Amounts (wei)</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="100, 200, 300... (comma or newline separated)"
-                    rows={4}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="amounts"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-600">Amounts (wei)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="100, 200, 300... (comma or newline separated)"
+                      rows={4}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="bg-muted space-y-2 rounded-lg border p-4">
-            <h2 className="text-sm font-medium text-zinc-600">
-              Transaction Details
-            </h2>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-600">Amount (wei):</span>
-              <span className="text-right font-mono">
-                {totalAmountInWei.toString()}
-              </span>
+            <div className="bg-muted space-y-2 rounded-lg border p-4">
+              <h2 className="text-sm font-medium text-zinc-600">
+                Transaction Details
+              </h2>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-600">Amount (wei):</span>
+                <span className="text-right font-mono">
+                  {totalAmountInWei.toString()}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-600">Amount (tokens):</span>
+                <span className="text-right font-mono">{totalTokens}</span>
+              </div>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-600">Amount (tokens):</span>
-              <span className="text-right font-mono">{totalTokens}</span>
-            </div>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isApproving || isSending}
-          >
-            {isApproving && 'Approving...'}
-            {isSending && 'Sending...'}
-            {!isApproving && !isSending && 'Send Tokens'}
-          </Button>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isApproving || isSending}
+            >
+              {isApproving && 'Approving...'}
+              {isSending && 'Sending...'}
+              {!isApproving && !isSending && 'Send Tokens'}
+            </Button>
 
-          {approveError && (
-            <p className="text-sm text-red-500">{approveError.message}</p>
-          )}
-          {sendError && (
-            <p className="text-sm text-red-500">{sendError.message}</p>
-          )}
-        </form>
-      </Form>
+            {approveError && (
+              <p className="text-sm text-red-500">{approveError.message}</p>
+            )}
+            {sendError && (
+              <p className="text-sm text-red-500">{sendError.message}</p>
+            )}
+          </form>
+        </Form>
+      )}
     </div>
   );
 }
