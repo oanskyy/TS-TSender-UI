@@ -4,24 +4,25 @@ import { readContract } from '@wagmi/core';
 import { toast } from 'sonner';
 import { useAccount, useConfig } from 'wagmi';
 
-export function useAllowance(
-  erc20TokenAddress: string,
-  spenderAddress: string,
-) {
+type AllowanceParams = {
+  token: string;
+  spender: string;
+};
+
+export function useAllowance({ token, spender }: AllowanceParams) {
   const config = useConfig();
   const { address: ownerWalletAddress } = useAccount();
 
   const getAllowance = async (): Promise<bigint> => {
-    if (!erc20TokenAddress || !ownerWalletAddress || !spenderAddress)
-      return BigInt(0);
+    if (!token || !ownerWalletAddress || !spender) return BigInt(0);
     // Read the current allowance from the ERC20 contract
     console.log('📖 Reading allowance from contract...');
     try {
       const allowance = await readContract(config, {
         abi: erc20Abi,
-        address: erc20TokenAddress as `0x${string}`,
+        address: token as `0x${string}`,
         functionName: 'allowance',
-        args: [ownerWalletAddress, spenderAddress],
+        args: [ownerWalletAddress, spender],
       });
       console.log('✅ readContract allowance response:', allowance);
       toast.success(`Allowance read successfully: ${allowance}`);

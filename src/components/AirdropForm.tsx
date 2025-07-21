@@ -2,12 +2,11 @@
 'use client';
 
 import { useMemo } from 'react';
-import { chainsToTSender, erc20Abi, tsenderAbi } from '@/constans';
+import { chainsToTSender } from '@/constans';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { readContract, waitForTransactionReceipt } from '@wagmi/core';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
-import { useAccount, useChainId, useConfig, useWriteContract } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import {
@@ -15,6 +14,7 @@ import {
   calculateTotalTokens,
   calculateTotalWei,
 } from '@/lib/calculateTotal';
+import { useAirdrop } from '@/hooks/useAirdrop';
 import { useAllowance } from '@/hooks/useAllowance';
 import { useApproveToken } from '@/hooks/useApproveToken';
 import { Button } from '@/components/ui/button';
@@ -43,7 +43,6 @@ export default function AirdropForm() {
   // 1. Get Required Data with Wagmi Hooks:
   const chainId = useChainId();
   const { address: ownerWalletAddress, isConnected } = useAccount();
-  const config = useConfig();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(FormSchema),
@@ -70,18 +69,13 @@ export default function AirdropForm() {
 
   const { approveToken, isApproving, approveError } = useApproveToken();
 
-  const {
-    writeContractAsync: sendWriteAsync,
-    isPending: isSending,
-    error: sendError,
-  } = useWriteContract();
-
   // Get the tsender contract address for the current chain
   const tsenderAddress = chainsToTSender[chainId]?.tsender;
-  const { getAllowance } = useAllowance(
-    form.watch('tokenAddress'),
-    tsenderAddress,
-  );
+  const { getAllowance } = useAllowance({
+    token: form.watch('tokenAddress'),
+    spender: tsenderAddress,
+  });
+  const { sendAirdrop, getBalances, isSending, sendError } = useAirdrop();
   const total = totalAmountInWei;
 
   async function onSubmit(data: FormValues) {
@@ -158,52 +152,32 @@ export default function AirdropForm() {
       console.log('🔗 Token Address:', data.tokenAddress);
       console.log('🏹 TSender Address:', tsenderAddress);
 
-      const airdropHash = await sendWriteAsync({
-        address: tsenderAddress as `0x${string}`,
-        abi: tsenderAbi,
-        functionName: 'airdropERC20',
-        args: [data.tokenAddress, recipientAddresses, amounts, total],
-        account: ownerWalletAddress,
-        gas: BigInt(300_000), // ✅ TEMP FIX to bypass gas estimation
-      });
-
+      const { txHash: airdropHash, receipt: airdropReceipt } =
+        await sendAirdrop({
+          contract: tsenderAddress,
+          token: data.tokenAddress,
+          recipients: recipientAddresses,
+          amounts,
+          total,
+        });
       console.log('✅ [Step 2.1] Airdrop tx hash:', airdropHash);
       console.log('⏳ [Step 2.2] Waiting for airdrop confirmation...');
       toast.info('⏳ Waiting for airdrop confirmation...');
-      const airdropReceipt = await waitForTransactionReceipt(config, {
-        hash: airdropHash,
-      });
-
-      if (airdropReceipt.status !== 'success') {
-        console.error('❌ [Step 2.3] Airdrop tx failed:', airdropReceipt);
-        toast.error('❌ Airdrop transaction failed.');
-        return;
-      } else {
-        console.log('🎉 [Step 2.3] Airdrop confirmed:', airdropReceipt);
-        console.log('✅ [Step 2] Airdrop successful!');
-        toast.success(
-          '✅ Airdrop transaction sent! Waiting for confirmation...',
-        );
-      }
+      console.log('✅ [Step 2.3] Airdrop confirmed:', airdropReceipt);
+      console.log('🎯 Reading recipient balances...');
 
       // 🟢 Step 3: Fetch recipient balance after airdrop
-      console.log('🔎 [Step 3] Checking recipient balance...');
-      for (const recipient of recipientAddresses) {
-        const balance = await readContract(config, {
-          abi: erc20Abi,
-          address: data.tokenAddress as `0x${string}`,
-          functionName: 'balanceOf',
-          args: [recipient],
-        });
+      const balances = await getBalances(data.tokenAddress, recipientAddresses);
+
+      balances.forEach((balance, i) => {
         console.log(
-          `💰 [Step 3.1] Recipient ${recipient} balance:`,
-          (balance as bigint).toString(),
+          `🟢 [Step 3] Recipient ${recipientAddresses[i]} balance: ${balance.toString()}`,
         );
         toast.success(
-          `💰 Recipient ${recipient} balance: ${(balance as bigint).toString()}`,
+          `💰 Recipient ${recipientAddresses[i]} balance: ${balance.toString()}`,
         );
-      }
-      console.log('🎉 [Step 3] All recipient balances checked.');
+      });
+
       toast.success('Airdrop successful! ✅');
     } catch (err) {
       console.error('❌ [ERROR] Transaction failed:', err);
