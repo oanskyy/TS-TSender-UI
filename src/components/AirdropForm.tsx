@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { chainsToTSender } from '@/constans';
 import { parseBigIntList, parseList } from '@/parseInput';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,6 +41,9 @@ const FormSchema = z.object({
 type FormValues = z.infer<typeof FormSchema>;
 
 export default function AirdropForm() {
+  const [recipientBalances, setRecipientBalances] = useState<
+    { address: string; balance: bigint }[]
+  >([]);
   // 1. Get Required Data with Wagmi Hooks:
   const chainId = useChainId();
   const { address: ownerWalletAddress, isConnected } = useAccount();
@@ -163,15 +166,23 @@ export default function AirdropForm() {
       // 🟢 Step 3: Fetch recipient balance after airdrop
       const balances = await getBalances(data.tokenAddress, recipientAddresses);
 
+      // Update state
+      setRecipientBalances(
+        recipientAddresses.map((addr, i) => ({
+          address: addr,
+          balance: balances[i],
+        })),
+      );
+
+      // Still keep the toasts if you like:
       balances.forEach((balance, i) => {
         console.log(
           `🟢 [Step 3] Recipient ${recipientAddresses[i]} balance: ${balance.toString()}`,
         );
         toast.success(
-          `💰 Recipient ${recipientAddresses[i]} balance: ${balance.toString()}`,
+          `💰 Recipient ${recipientAddresses[i]}: ${balance.toString()}`,
         );
       });
-
       toast.success('Airdrop successful! ✅');
     } catch (err) {
       console.error('❌ [ERROR] Transaction failed:', err);
@@ -278,6 +289,19 @@ export default function AirdropForm() {
             )}
             {sendError && (
               <p className="text-sm text-red-500">{sendError.message}</p>
+            )}
+
+            {recipientBalances.length > 0 && (
+              <div className="space-y-2 rounded-md border border-green-200 bg-green-50 p-4 text-base text-green-700">
+                <p className="font-medium">✅ Post-Airdrop Balances:</p>
+                <ul className="list-disc pl-4">
+                  {recipientBalances.map(({ address, balance }) => (
+                    <li key={address}>
+                      <code>{address}</code> -- {balance.toString()} wei
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </form>
         </Form>
