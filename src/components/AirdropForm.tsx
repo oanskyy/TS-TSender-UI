@@ -16,6 +16,7 @@ import {
   calculateTotalWei,
 } from '@/lib/calculateTotal';
 import { useAllowance } from '@/hooks/useAllowance';
+import { useApproveToken } from '@/hooks/useApproveToken';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -67,11 +68,7 @@ export default function AirdropForm() {
     [totalAmountInWei],
   );
 
-  const {
-    writeContractAsync: approveWriteAsync,
-    isPending: isApproving,
-    error: approveError,
-  } = useWriteContract();
+  const { approveToken, isApproving, approveError } = useApproveToken();
 
   const {
     writeContractAsync: sendWriteAsync,
@@ -112,24 +109,19 @@ export default function AirdropForm() {
           `🛑 [Step 1.1] Approval needed: Current ${approvedAmount}, Required ${total}`,
         );
 
-        const approvalHash = await approveWriteAsync({
-          address: data.tokenAddress as `0x${string}`,
-          abi: erc20Abi,
-          functionName: 'approve',
-          args: [tsenderAddress, total],
-          account: ownerWalletAddress,
-          gas: BigInt(100_000), // ✅ manually set gas limit
-        });
+        const { txHash: approvalHash, receipt: approvalReceipt } =
+          await approveToken({
+            token: data.tokenAddress,
+            spender: tsenderAddress,
+            amount: total,
+          });
+
         console.log('🟢 Calling approve with:');
         console.log('💰 token:', data.tokenAddress);
         console.log('🏹 spender:', tsenderAddress);
         console.log('💰 amount:', total.toString());
         console.log('👛 account:', ownerWalletAddress);
         console.log('✅ [Step 1.2] Approval tx hash:', approvalHash);
-
-        const approvalReceipt = await waitForTransactionReceipt(config, {
-          hash: approvalHash,
-        });
 
         if (approvalReceipt.status !== 'success') {
           console.error('❌ [Step 1.3] Approval tx failed:', approvalReceipt);
