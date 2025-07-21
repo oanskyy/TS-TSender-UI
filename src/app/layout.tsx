@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import Providers from './providers';
 import { ThemeProvider } from 'next-themes';
+import { Toaster } from 'sonner';
+
 import Header from '../components/Header';
+
+import './globals.css';
+
+import Providers from './providers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,10 +47,11 @@ export default function RootLayout({
           <Providers>
             <Header />
             {/* Main content area */}
-            <div className="max-w-6xl mx-auto px-4 py-8">{children}</div>
+            <div className="mx-auto max-w-6xl px-4 py-8">{children}</div>
             <div className="h-16" /> {/* Spacer for footer */}
             {/* Footer can be added here if needed */}
             {/* <Footer /> */}
+            <Toaster richColors position="top-center" />
           </Providers>
         </ThemeProvider>
       </body>
