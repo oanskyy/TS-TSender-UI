@@ -44,6 +44,8 @@ export default function AirdropForm() {
   const [recipientBalances, setRecipientBalances] = useState<
     { address: string; balance: bigint }[]
   >([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // 1. Get Required Data with Wagmi Hooks:
   const chainId = useChainId();
   const { address: ownerWalletAddress, isConnected } = useAccount();
@@ -83,6 +85,7 @@ export default function AirdropForm() {
   const total = totalAmountInWei;
 
   async function onSubmit(data: FormValues) {
+    setIsSubmitting(true); // 🔒 Lock form on submit
     console.log('🟢🟢🟢 [Step 0] Form submission debug info:');
     console.log('🔗 Token Address:', data.tokenAddress);
     console.log('🔗 Current Chain ID:', chainId);
@@ -98,7 +101,7 @@ export default function AirdropForm() {
 
     // 3 Execute the airdrop: Once sufficient allowance is confirmed, call the function on the airdrop contract to perform the token transfers.
     try {
-      // 🟢 Step 1: Check approval
+      // 🟢 Step 1: check allowance + approve if needed
       console.log('🟢🟢🟢 [Step 1] Checking token allowance...');
       const approvedAmount = await getAllowance();
 
@@ -166,7 +169,6 @@ export default function AirdropForm() {
       // 🟢 Step 3: Fetch recipient balance after airdrop
       const balances = await getBalances(data.tokenAddress, recipientAddresses);
 
-      // Update state
       setRecipientBalances(
         recipientAddresses.map((addr, i) => ({
           address: addr,
@@ -174,7 +176,6 @@ export default function AirdropForm() {
         })),
       );
 
-      // Still keep the toasts if you like:
       balances.forEach((balance, i) => {
         console.log(
           `🟢 [Step 3] Recipient ${recipientAddresses[i]} balance: ${balance.toString()}`,
@@ -183,10 +184,13 @@ export default function AirdropForm() {
           `💰 Recipient ${recipientAddresses[i]}: ${balance.toString()}`,
         );
       });
-      toast.success('Airdrop successful! ✅');
     } catch (err) {
       console.error('❌ [ERROR] Transaction failed:', err);
       toast.error('❌ Transaction failed. See console for details.');
+    } finally {
+      setIsSubmitting(false); // 🔓 Always unlock form
+      form.reset();
+      toast.success('Airdrop successful! ✅');
     }
   }
 
@@ -208,55 +212,64 @@ export default function AirdropForm() {
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="tokenAddress"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-zinc-600">Token Address</FormLabel>
-                  <FormControl>
-                    <Input type="text" placeholder="0x..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <fieldset
+              disabled={isSubmitting}
+              className="space-y-6 opacity-100 disabled:cursor-not-allowed"
+            >
+              <FormField
+                control={form.control}
+                name="tokenAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-zinc-600">
+                      Token Address
+                    </FormLabel>
+                    <FormControl>
+                      <Input type="text" placeholder="0x..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="recipients"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-zinc-600">Recipients</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="0x123..., 0x456... (comma or newline separated)"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="recipients"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-zinc-600">Recipients</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="0x123..., 0x456... (comma or newline separated)"
+                        rows={4}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="amounts"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-zinc-600">Amounts (wei)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="100, 200, 300... (comma or newline separated)"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="amounts"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-zinc-600">
+                      Amounts (wei)
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="100, 200, 300... (comma or newline separated)"
+                        rows={4}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </fieldset>
 
             <div className="bg-muted space-y-2 rounded-lg border p-4">
               <h2 className="text-sm font-medium text-zinc-600">
@@ -277,7 +290,7 @@ export default function AirdropForm() {
             <Button
               type="submit"
               className="w-full"
-              disabled={isApproving || isSending}
+              disabled={isApproving || isSending || isSubmitting}
             >
               {isApproving && 'Approving...'}
               {isSending && 'Sending...'}
