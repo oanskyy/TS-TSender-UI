@@ -140,9 +140,7 @@ export default function AirdropForm() {
         data.tokenAddress,
         tsenderAddress,
       );
-      // TODO: Compare approvedAmount with the total amount needed for the airdrop
-      // TODO: If allowance is insufficient, call the 'approve' function (approveWriteAsync/ approve function)
-      // TODO: If allowance is sufficient, call the 'airdrop' function on tsender contract (sendWriteAsync /airdrop function)
+
       if (approvedAmount < total) {
         console.log(
           `🛑 [Step 1.1] Approval needed: Current ${approvedAmount}, Required ${total}`,

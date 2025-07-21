@@ -4,6 +4,16 @@
 
 A full-stack Web3 dashboard that replicates the functionality of [`t-sender.com`](https://t-sender.com), allowing admins to airdrop ERC20 tokens to multiple recipients via a highly gas-optimized smart contract (written in Huff). Built with modular Web3 hooks, secure wallet integration, and a responsive, user-focused interface.
 
+### 🎥 Demo (Approve & Airdrop Flow)
+
+![tsender-demo](./screenshots/tsender-demo.gif)
+
+> 🖼️ This shows the full flow:
+>
+> 1. User fills the form with token + recipient data
+> 2. Wallet prompts for ERC20 approval
+> 3. User confirms the airdrop transaction
+
 ---
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
@@ -35,64 +45,144 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ---
+
 ## 🎯 Project Objective
- Build a front-end application to interact with the TSender smart contract. This contract facilitates airdropping ERC20 tokens to multiple recipients in a single transaction.
+
+Build a front-end dashboard to interact with the TSender smart contract, enabling admins to airdrop ERC20 tokens to multiple recipients in a single, gas-optimized transaction.
+
+This mimics the functionality of platforms like t-sender.com and demonstrates smart contract interaction, approval flows, and wallet integration with a user-friendly UI.
+
+## 🖼 Screenshots
+
+### Airdrop Form (Pre-submit)
+
+![TSender UI Form](./screenshots/form.png)
+
+### MetaMask Approval (Approve Token Spend)
+
+![MetaMask Approve](./screenshots/approveOanskyToken.png)
+
+### MetaMask TX Confirmation (Airdrop)
+
+![MetaMask Airdrop](./screenshots/airdrop-tx-SKY.png)
+
+---
 
 ## 🔧 Build Steps
-1. Create a react/next.js project (static)
-2. Connect wallet
 
-- feat: configure wagmi, rainbowKit
-- feat: wrap app in providers
-- feat: add connect wallet button UI
-- style: add airdrop form with shadcn ui form, input, textarea
+<details>
+<summary>1. 📦 Project Setup</summary>
 
-3. Implement this function
+- Create a **React / Next.js** project (static).
+- Install and configure the following libraries:
 
-```javascript
-   function airdropERC20(
-        address tokenAddress, //ERC20 token to be airdroped
-        address[] calldata recipients,
-        uint256[] calldata amounts,
-        uint256 totalAmount
-        )
+  ```bash
+  pnpm add wagmi viem @rainbow-me/rainbowkit
+  pnpm add @hookform/resolvers zod react-hook-form
+  ```
+
+- Setup `shadcn/ui` for the form, inputs, and components.
+
+</details>
+
+<details>
+<summary>2. 🔌 Wallet Integration</summary>
+
+- Configure **wagmi** and **RainbowKit**.
+- Wrap your app in the required providers (`WagmiConfig`, `RainbowKitProvider`, etc.).
+- Add a **Connect Wallet** button using RainbowKit.
+- Create the **Airdrop Form** using `shadcn/ui` with `Form`, `Input`, and `Textarea`.
+
+</details>
+
+<details>
+<summary>3. 🧠 Allowance + Airdrop Flow</summary>
+
+### 🛠 Contract Function
+
+The core smart contract function looks like:
+
+```solidity
+function airdropERC20(
+    address tokenAddress,      // ERC20 token to be airdropped
+    address[] calldata recipients, // Wallets to receive tokens
+    uint256[] calldata amounts,    // Corresponding token amounts
+    uint256 totalAmount            // Sum of all amounts
+) external;
 ```
 
-4. Deploy to Fleek
+### 🧩 Frontend Logic
+
+✅ **Step 1: Get Required Data with Wagmi Hooks**
+
+- Use `useAccount`, `useChainId`, and `useConfig` to access wallet and network info.
+- Use `useWatch` to track form values in real time.
+
+✅ **Step 2: Fetch Allowance**
+
+- Create a `getApprovedAmount` helper function.
+- This encapsulates the logic for calling `allowance()` on the ERC20 token contract using `readContract` from `@wagmi/core`.
+- Use it to check if the user has approved the TSender contract to spend tokens.
+
+✅ **Step 3: Conditional Logic**  
+Compare the `approvedAmount` with the `total` amount needed:
+
+- If `approvedAmount < total`, call `approve(...)` using `writeContractAsync`.
+- If approved, or already sufficient, proceed to the airdrop step.
+
+✅ **Step 4: Airdrop Tokens**
+
+- Call `airdropERC20(...)` with the parsed recipient and amount lists.
+- Wait for transaction confirmation.
+- Read and display recipient balances after airdrop using `balanceOf(...)`.
+
+</details>
+
+<details>
+<summary>4. 🚀 Deployment</summary>
+
+Deploy this static frontend to:
+
+- **Fleek** (IPFS-based deployment)
+- **Vercel** or **Netlify** (for non-IPFS)
+
+</details>
+
+---
+## ⚙️ Supported Chains & Deployed TSender Contracts
+
+This dApp supports multiple EVM chains where the TSender airdrop smart contract has already been deployed.
+
+| Chain             | Chain ID   | TSender Address                                  | Explorer Link                                                                 |
+|------------------|------------|--------------------------------------------------|--------------------------------------------------------------------------------|
+| Ethereum Mainnet | 1          | `0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821`     | [Etherscan](https://etherscan.io/address/0x3aD9F29AB266E4828450B33df7a9B9D7355Cd821)     |
+| Optimism         | 10         | `0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa`     | [Optimistic Etherscan](https://optimistic.etherscan.io/address/0xAaf523DF9455cC7B6ca5637D01624BC00a5e9fAa) |
+| Arbitrum One     | 42161      | `0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19`     | [Arbiscan](https://arbiscan.io/address/0xA2b5aEDF7EEF6469AB9cBD99DE24a6881702Eb19)       |
+| Base             | 8453       | `0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa`     | [BaseScan](https://basescan.org/address/0x31801c3e09708549c1b2c9E1CFbF001399a1B9fa)      |
+| zkSync Era       | 324        | `0x7e645Ea4386deb2E9e510D805461aA12db83fb5E`     | [zkSync Explorer](https://explorer.zksync.io/address/0x7e645Ea4386deb2E9e510D805461aA12db83fb5E) |
+| Sepolia Testnet  | 11155111   | `0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a`     | [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xa27c5C77DA713f410F9b15d4B0c52CAe597a973a) |
+| Anvil (Local)    | 31337      | `0x5FbDB2315678afecb367f032d93F642f64180aa3`     | Local only                                                                     |
 
 ---
 
-## ⚙️ Contract Addresses
+### ✅ TSender Compatibility
 
-| Contract        | Description                                               | Example Address                              |
-| --------------- | --------------------------------------------------------- | -------------------------------------------- |
-| **ERC20 Token** | The token you are airdropping. Must implement `approve`.  | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
-| **TSender**     | The airdrop smart contract that distributes tokens.       |
-|                 | (Address that will be able to spend token on your behalf) | `0x5FbDB2315678afecb367f032d93F642f64180aa3` |
-
-✅ **ERC20 Token** is any deployable token contract (Huff or Solidity). (ETH)
-✅ **TSender** is your airdrop smart contract that sends tokens in a batch.
+- ✅ This frontend supports **all chains listed above** via **RainbowKit + Wagmi**.
+- ✅ You can use **any standard ERC20 token** on these chains, including custom ones you deploy yourself.
+- ✅ All deployments use the **same TSender interface** — no frontend changes needed across networks.
+- ✅ As long as your ERC20 token implements `approve()` and `transferFrom()`, the UI works out of the box.
+- ✅ You can also deploy your own ERC20 token to these networks and use this dashboard to airdrop.
 
 ---
 
-✅ **How to check**
+### ✅ Verified Deployment
 
-**To confirm ERC20 token contract:**
+[![Sepolia – OanskyToken Verified](https://img.shields.io/badge/Deployed%20on-Sepolia-green?style=for-the-badge&logo=ethereum)](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
 
-```bash
-cast call <TOKEN_ADDRESS> "name()(string)"
-cast call 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 "name()(string)"
-
-```
-
-**To confirm TSender/Airdrop contract:**
-
-```bash
-cast call <TSENDER_ADDRESS> "airdropERC20(address,address[],uint256[],uint256)()"
-cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,address[],uint256[],uint256)()"
-
-(receipents anvil acc1): 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-```
+- **Token**: `OanskyToken`
+- **Address**: [`0xC3F8ffA25823E768500F9361D872d2bc7d275fa1`](https://sepolia.etherscan.io/token/0xC3F8ffA25823E768500F9361D872d2bc7d275fa1)
+- ✅ Supports full `approve()` → `airdropERC20()` flow
+- ✅ Fully tested with TSender on Sepolia
 
 ---
 
@@ -198,8 +288,8 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,addre
   - [ ] Display connected chain/network name visibly
 
 - [ ] ✅ **Deployment Hygiene**
-  - [X] Store API keys in `.env.local`
-  - [X] Never expose private keys or secrets client-side
+  - [x] Store API keys in `.env.local`
+  - [x] Never expose private keys or secrets client-side
 
 ---
 
@@ -272,9 +362,9 @@ cast call 0x5FbDB2315678afecb367f032d93F642f64180aa3 "airdropERC20(address,addre
 
 ⚠️ **Anvil is local only. For production:**
 
-- Deploy contracts to Sepolia or Mainnet
-- Update Wagmi config with production RPC URLs
-- Redeploy frontend to Netlify or Fleek
+- [x] Deploy contracts to Sepolia
+- [x] Update Wagmi config with production RPC URLs
+- [ ] Redeploy frontend to Netlify or Fleek
 
 ---
 
