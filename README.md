@@ -4,6 +4,8 @@
 
 A full-stack Web3 dashboard that replicates the functionality of [`t-sender.com`](https://t-sender.com), allowing admins to airdrop ERC20 tokens to multiple recipients via a highly gas-optimized smart contract (written in Huff). Built with modular Web3 hooks, secure wallet integration, and a responsive, user-focused interface.
 
+[🌐 Live Demo](https://token-airdrop-sender-202506.netlify.app/) | [🧠 Learn More](#learn-more)
+
 ### 🎥 Demo (Approve & Airdrop Flow)
 
 ![tsender-demo](./screenshots/tsender-demo.gif)
@@ -45,6 +47,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ---
+
+<a name="learn-more"></a>
 
 ## 🎯 Project Objective
 
@@ -254,11 +258,36 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
 
 ---
 
-## 📈 Planned Improvements
+<details open>
+<summary>🚀 MVP Scope (Core Features Only)</summary>
+
+| Feature Area             | Feature Description                        | Status         |
+| ------------------------ | ------------------------------------------ | -------------- |
+| 🧠 Smart Contract Logic  | Connect wallet with RainbowKit             | ✅ Done        |
+|                          | Check ERC20 allowance via `readContract`   | ✅ Done        |
+|                          | Approve tokens via `writeContract`         | ✅ Done        |
+|                          | Trigger airdrop via `airdropERC20(...)`    | ✅ Done        |
+|                          | Show post-airdrop balances                 | 🚧 In Progress |
+|                          | Graceful error handling                    | ✅ Done        |
+| 🧾 Form & Input Handling | Use `shadcn/ui` with React Hook Form + Zod | ✅ Done        |
+|                          | CSV support for addresses + amounts        | 🚧 In Progress |
+|                          | Validate required fields                   | ✅ Done        |
+| 🔐 Wallet UX             | Disable form if wallet not connected       | ✅ Done        |
+|                          | Show connected network visibly             | ✅ Done        |
+|                          | Prevent double-submit during TX            | ✅ Done        |
+| 🌍 Deployment & Privacy  | Deploy to Fleek or Vercel                  | ✅ Done        |
+|                          | Store secrets in `.env.local`              | ✅ Done        |
+|                          | Avoid logging wallet addresses             | ✅ Done        |
+
+</details>
 
 ---
 
-### 🔒 Security Checklist (Common Web3 Pitfalls)
+<details>
+<summary>📈 Full Roadmap (Planned Improvements)</summary>
+
+<details>
+<summary>🔒 Security Checklist (Common Web3 Pitfalls)</summary>
 
 - [ ] ✅ **Input Sanitization**
   - [ ] Validate addresses (EIP-55 checksum)
@@ -288,19 +317,23 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
   - [ ] Show token symbol, icon, and decimals clearly
   - [ ] Display connected chain/network name visibly
 
-- [ ] ✅ **Deployment Hygiene**
+- [x] ✅ **Deployment Hygiene**
   - [x] Store API keys in `.env.local`
   - [x] Never expose private keys or secrets client-side
 
----
+</details>
 
-### 🔁 Performance & Scaling
+<details>
+<summary>🔁 Performance & Scaling</summary>
 
 - [ ] Optimistic UI feedback (e.g. "Sending..." before confirmation)
 - [ ] Progress tracker for large sends
 - [ ] Pagination or batching for >1,000 recipients
 
-### 🧠 Recipient Address Management
+</details>
+
+<details>
+<summary>🧠 Recipient Address Management</summary>
 
 - [ ] ENS name resolution
 - [ ] Address validation (checksum + format)
@@ -308,25 +341,28 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
   - [ ] Option 1: `localStorage`
   - [ ] Option 2: IPFS
 
----
+</details>
 
-### 📊 Analytics & Token Insights
+<details>
+<summary>📊 Analytics & Token Insights</summary>
 
 - [ ] **Pie Chart (Recharts + Tailwind)**
   - [ ] Show % token distribution per recipient
   - [ ] Optional: Group wallets by category
 
----
+</details>
 
-### 📚 Airdrop History & Analytics
+<details>
+<summary>📚 Airdrop History & Analytics</summary>
 
 - [ ] Integrate **The Graph** for historical airdrop data
   - [ ] Display previous distributions
   - [ ] Link to transaction explorer (e.g. Etherscan)
 
----
+</details>
 
-### 🎥 Project Demo & Documentation
+<details>
+<summary>🎥 Project Demo & Documentation</summary>
 
 - [ ] Write walkthrough script
 - [ ] Record Loom video (1–2 min)
@@ -335,9 +371,10 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
   - [ ] Submit → TX confirmation
 - [ ] Design PDF or visual flow (Figma-style)
 
----
+</details>
 
-### 🚦 UX & Performance Audit
+<details>
+<summary>🚦 UX & Performance Audit</summary>
 
 - [ ] Run Lighthouse Audit
   - [ ] Performance
@@ -346,18 +383,23 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
   - [ ] SEO
 - [ ] Include audit screenshot or score summary in docs
 
----
+</details>
 
-## 📂 Project Structure (Simplified)
+</details>
 
+<details>
+<summary>📂 Project Structure (Simplified)</summary>
+
+```
 /components → UI elements (buttons, form sections)
 /hooks → Custom Web3 logic (approve, airdrop)
 /pages → Next.js routes (index, success, etc.)
 /lib → Constants, utilities, config (RainbowKit)
 /public → Static assets
 /docs → Detailed tech overview
+```
 
----
+</details>
 
 ### 🏁 **Deployment Note**
 
@@ -365,13 +407,17 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
 
 - [x] Deploy contracts to Sepolia
 - [x] Update Wagmi config with production RPC URLs
-- [ ] Redeploy frontend to Netlify or Fleek
+- [ ] Redeploy frontend to Netlify/Vercel or Fleek
 
 ---
 
 ### 🙏 **Credits**
 
-- Built by **[@oanskyy]**
+- Built by **[@oanskyy](https://github.com/oanskyy)**
 - Inspired by [t-sender.com](https://t-sender.com) (gas optimization approach)
 
 ---
+
+## 📄 License
+
+MIT © 2025 Oana Anghelachi
