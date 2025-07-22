@@ -9,7 +9,9 @@ type AllowanceParams = {
   spender: string;
 };
 
-export function useAllowance({ token, spender }: AllowanceParams) {
+export function useAllowance({ token, spender }: AllowanceParams): {
+  getAllowance: () => Promise<bigint>;
+} {
   const config = useConfig();
   const { address: ownerWalletAddress } = useAccount();
 
