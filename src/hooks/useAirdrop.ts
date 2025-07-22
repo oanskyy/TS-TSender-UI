@@ -12,6 +12,8 @@ type AirdropParams = {
   total: bigint;
 };
 
+type ReceiptType = Awaited<ReturnType<typeof waitForTransactionReceipt>>;
+
 export function useAirdrop() {
   const config = useConfig();
   const { address: sender } = useAccount();
@@ -24,7 +26,10 @@ export function useAirdrop() {
     recipients,
     amounts,
     total,
-  }: AirdropParams) => {
+  }: AirdropParams): Promise<{
+    txHash: `0x${string}`;
+    receipt: ReceiptType;
+  }> => {
     try {
       toast.info('🚀 Sending airdrop transaction...');
       console.log('🚀 Sending airdrop tx...');
