@@ -10,13 +10,22 @@ type ApproveParams = {
   amount: bigint;
 };
 
+type ReceiptType = Awaited<ReturnType<typeof waitForTransactionReceipt>>;
+
 export function useApproveToken() {
   const { address: owner } = useAccount();
   const config = useConfig();
 
   const { writeContractAsync, isPending, error } = useWriteContract();
 
-  const approveToken = async ({ token, spender, amount }: ApproveParams) => {
+  const approveToken = async ({
+    token,
+    spender,
+    amount,
+  }: ApproveParams): Promise<{
+    txHash: `0x${string}`;
+    receipt: ReceiptType;
+  }> => {
     console.log('🔐 Approving token spend...');
 
     try {
