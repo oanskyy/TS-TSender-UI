@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 'use client';
 
-import { useMemo, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 import { chainsToTSender } from '@/constans';
 import { parseBigIntList, parseList } from '@/parseInput';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,10 +39,14 @@ const FormSchema = z.object({
 });
 
 type FormValues = z.infer<typeof FormSchema>;
+type RecipientBalance = {
+  address: string;
+  balance: bigint;
+};
 
-export default function AirdropForm() {
+export default function AirdropForm(): JSX.Element {
   const [recipientBalances, setRecipientBalances] = useState<
-    { address: string; balance: bigint }[]
+    RecipientBalance[]
   >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -59,7 +63,10 @@ export default function AirdropForm() {
     },
   });
 
-  const watchedAmounts = useWatch({ control: form.control, name: 'amounts' });
+  const watchedAmounts: string = useWatch({
+    control: form.control,
+    name: 'amounts',
+  });
   const amountList = useMemo(
     () => calculateAmountList(watchedAmounts),
     [watchedAmounts],
@@ -84,7 +91,7 @@ export default function AirdropForm() {
   const { sendAirdrop, getBalances, isSending, sendError } = useAirdrop();
   const total = totalAmountInWei;
 
-  async function onSubmit(data: FormValues) {
+  async function onSubmit(data: FormValues): Promise<void> {
     setIsSubmitting(true); // 🔒 Lock form on submit
     console.log('🟢🟢🟢 [Step 0] Form submission debug info:');
     console.log('🔗 Token Address:', data.tokenAddress);
