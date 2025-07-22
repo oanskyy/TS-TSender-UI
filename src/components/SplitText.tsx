@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { JSX, useEffect, useRef } from 'react';
 import { animate, stagger } from 'motion';
 import { splitText } from 'motion-plus';
 
-export default function SplitText() {
+export default function SplitText(): JSX.Element {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -14,7 +14,10 @@ export default function SplitText() {
       // Hide the container until the fonts are loaded
       containerRef.current.style.visibility = 'visible';
 
-      const { words } = splitText(containerRef.current.querySelector('h1')!);
+      const h1 = containerRef.current.querySelector('h1');
+      if (!h1) return;
+
+      const { words } = splitText(h1);
 
       // Animate the words in the h1
       animate(
@@ -208,7 +211,7 @@ export default function SplitText() {
   );
 }
 
-function Stylesheet() {
+function Stylesheet(): JSX.Element {
   return (
     <style>{`
             .container {
@@ -228,5 +231,3 @@ function Stylesheet() {
         `}</style>
   );
 }
-
-// max-width: 420px;
