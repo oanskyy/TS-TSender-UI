@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -19,7 +19,7 @@ const WalletConnectDynamic = dynamic(() => import('./WalletConnect'), {
 // ✅ Defers heavy/browser-specific logic to client only
 // ✅ Fully supported and documented by Vercel
 
-export default function Header() {
+export default function Header(): JSX.Element {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -95,4 +95,3 @@ export default function Header() {
 // It uses Framer Motion for animations and Next.js Link for navigation.
 // The header has a sticky position, a blurred background, and a dot grid mask that appears when scrolled.
 // The header also includes a GitHub icon linking to the project's repository.
-// The component is designed to be visually appealing and functional, providing a good user experience on both desktop and mobile devices.
