@@ -1,10 +1,17 @@
-export function parseList(input: string): string[] {
+export function parseList(input: string | undefined | null): string[] {
+  if (!input) return [];
   return input
     .split(/,|\n/)
     .map((s) => s.trim())
     .filter(Boolean);
 }
 
-export function parseBigIntList(input: string): bigint[] {
-  return parseList(input).map((a) => BigInt(a));
+export function parseBigIntList(input: string | undefined | null): bigint[] {
+  return parseList(input).map((a) => {
+    try {
+      return BigInt(a);
+    } catch {
+      return BigInt(0);
+    }
+  });
 }
