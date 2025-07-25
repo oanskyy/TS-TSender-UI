@@ -148,23 +148,23 @@ This dApp supports multiple EVM chains where the TSender airdrop smart contract 
 <details open>
 <summary>🚀 MVP Scope (Core Features Only)</summary>
 
-| Feature Area             | Feature Description                        | Status         |
-| ------------------------ | ------------------------------------------ | -------------- |
-| 🧠 Smart Contract Logic  | Connect wallet with RainbowKit             | ✅ Done        |
-|                          | Check ERC20 allowance via `readContract`   | ✅ Done        |
-|                          | Approve tokens via `writeContract`         | ✅ Done        |
-|                          | Trigger airdrop via `airdropERC20(...)`    | ✅ Done        |
-|                          | Show post-airdrop balances                 | 🚧 In Progress |
-|                          | Graceful error handling                    | 🚧 In Progress |
-| 🧾 Form & Input Handling | Use `shadcn/ui` with React Hook Form + Zod | ✅ Done        |
-|                          | CSV support for addresses + amounts        | 🚧 In Progress |
-|                          | Validate required fields                   | ✅ Done        |
-| 🔐 Wallet UX             | Disable form if wallet not connected       | 🚧 In Progress |
-|                          | Show connected network visibly             | ✅ Done        |
-|                          | Prevent double-submit during TX            | 🚧 In Progress |
-| 🌍 Deployment & Privacy  | Deploy to Fleek or Vercel/Netlify          | ✅ Done        |
-|                          | Store secrets in `.env.local`              | ✅ Done        |
-|                          | Avoid logging wallet addresses             | ✅ Done        |
+| Feature Area             | Feature Description                        | Status                                           |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------ |
+| 🧠 Smart Contract Logic  | Connect wallet with RainbowKit             | ✅ Done                                          |
+|                          | Check ERC20 allowance via `readContract`   | ✅ Done                                          |
+|                          | Approve tokens via `writeContract`         | ✅ Done                                          |
+|                          | Trigger airdrop via `airdropERC20(...)`    | ✅ Done                                          |
+|                          | Show post-airdrop balances                 | ✅ Done 🆕                                       |
+|                          | Graceful error handling                    | ⚠️ Partial – basic toasts exist, but not full UX |
+| 🧾 Form & Input Handling | Use `shadcn/ui` with React Hook Form + Zod | ✅ Done                                          |
+|                          | CSV support for addresses + amounts        | ❌ Not Yet 🚧                                    |
+|                          | Validate required fields                   | 🚧 In Progress                                   |
+| 🔐 Wallet UX             | Disable form if wallet not connected       | ⚠️ Partial – functional but not perfect          |
+|                          | Show connected network visibly             | ✅ Done                                          |
+|                          | Prevent double-submit during TX            | ⚠️ Partial – not enforced visually yet           |
+| 🌍 Deployment & Privacy  | Deploy to Fleek or Vercel/Netlify          | 🚧 In Progress                                   |
+|                          | Store secrets in `.env.local`              | ✅ Done                                          |
+|                          | Avoid logging wallet addresses             | ✅ Done                                          |
 
 </details>
 
@@ -274,6 +274,22 @@ Deploy this static frontend to:
 <summary>📈 Full Roadmap (Planned Improvements)</summary>
 
 <details>
+<summary>🧠 Immediate Next Steps</summary>
+
+These are either partially done or high-leverage polish tasks.
+
+| 🔥 Priority | Task                           | Why                                                   | Tags                        |
+| ----------- | ------------------------------ | ----------------------------------------------------- | --------------------------- |
+| 🧪 High     | Playwright E2E Testing         | Ensure full user flows work across wallet UX          | `testing`, `web3`, `qa`     |
+| ⚠️ Medium   | Graceful error handling        | Better UX for wallet errors / bad input               | `ux`, `web3`, `bug`         |
+| ✅ Medium   | CSV Upload Support             | Scale-ready UX for large recipient lists              | `feature`, `enhancement`    |
+| 🔍 Medium   | Validate addresses (EIP-55)    | Avoid invalid airdrop failures and wasted gas         | `security`, `web3`, `qa`    |
+| 📊 Medium   | Token Logo / Preview           | Adds visual polish and trust to token interactions    | `ux`, `enhancement`, `web3` |
+| 🔮 Medium   | Use `simulateContract()` + gas | UX clarity before TX, aligns with Web3 best practices | `web3`, `ux`, `performance` |
+
+</details>
+
+<details>
 <summary>🔒 Security Checklist (Common Web3 Pitfalls)</summary>
 
 - [ ] ✅ **Input Sanitization**
@@ -283,11 +299,11 @@ Deploy this static frontend to:
 
 - [ ] ✅ **Wallet Interaction Safety**
   - [ ] Use `preparedWriteContract` (wagmi)
-  - [ ] Check for wallet connection before enabling form
-  - [ ] Disable send button during TX
+  - [x] Check for wallet connection before enabling form
+  - [x] Disable send button during TX
 
 - [ ] ✅ **Smart Contract Precautions**
-  - [ ] Check token allowance before `airdrop()`
+  - [x] Check token allowance before `airdrop()`
   - [ ] Show gas estimate before confirmation
   - [ ] Graceful error messages on `revert`
 
@@ -301,8 +317,8 @@ Deploy this static frontend to:
 
 - [ ] ✅ **User Safety UX**
   - [ ] Warn on unsupported networks
-  - [ ] Show token symbol, icon, and decimals clearly
-  - [ ] Display connected chain/network name visibly
+  - [x] Show token symbol, icon, and decimals clearly
+  - [x] Display connected chain/network name visibly
 
 - [x] ✅ **Deployment Hygiene**
   - [x] Store API keys in `.env.local`
