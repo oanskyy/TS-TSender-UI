@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useDebounce } from 'use-debounce';
+import { formatUnits } from 'viem';
 import { useAccount, useChainId } from 'wagmi';
 import { z } from 'zod';
 
@@ -90,14 +91,10 @@ export default function AirdropForm(): JSX.Element {
     () => calculateTotalWei(amountList),
     [amountList],
   );
-  // const totalTokens: string = useMemo(
-  //   () => calculateTotalTokens(totalAmountInWei, 18),
-  //   [totalAmountInWei],
-  // );
-  const totalTokens: string = useMemo(() => {
-    const decimals = tokenInfo?.decimals ?? 18;
-    return calculateTotalTokens(totalAmountInWei, decimals);
-  }, [totalAmountInWei, tokenInfo?.decimals]);
+  const totalTokens: string = useMemo(
+    () => calculateTotalTokens(totalAmountInWei, 18),
+    [totalAmountInWei],
+  );
 
   const { approveToken, isApproving, approveError } = useApproveToken();
 
@@ -349,13 +346,31 @@ export default function AirdropForm(): JSX.Element {
             {recipientBalances.length > 0 && (
               <div className="space-y-2 rounded-md border border-green-200 bg-green-50 p-4 text-base text-green-700">
                 <p className="font-medium">✅ Post-Airdrop Balances:</p>
-                <ul className="list-disc pl-4">
-                  {recipientBalances.map(({ address, balance }) => (
-                    <li key={address}>
-                      <code>{address}</code> -- {balance.toString()} wei
-                    </li>
-                  ))}
-                </ul>
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-green-300">
+                      <th className="px-2 py-1 font-semibold text-green-700">
+                        Recipient
+                      </th>
+                      <th className="px-2 py-1 font-semibold text-green-700">
+                        Amount ({tokenInfo?.symbol ?? 'tokens'})
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recipientBalances.map(({ address, balance }) => (
+                      <tr key={address} className="border-b border-green-100">
+                        <td className="px-2 py-1 font-mono break-all">
+                          {address}
+                        </td>
+                        <td className="px-2 py-1">
+                          {formatUnits(balance, tokenInfo?.decimals ?? 18)}
+                          {/* {balance.toString()} */}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </form>
