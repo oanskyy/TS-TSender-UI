@@ -6,6 +6,7 @@ import { chainsToTSender } from '@/constans';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useDebounce } from 'use-debounce';
 import { useAccount, useChainId } from 'wagmi';
 import { z } from 'zod';
 
@@ -68,12 +69,16 @@ export default function AirdropForm(): JSX.Element {
     control: form.control,
     name: 'amounts',
   });
+  const watchedTokenAddress = useWatch({
+    control: form.control,
+    name: 'tokenAddress',
+  });
+  const [debouncedTokenAddress] = useDebounce(watchedTokenAddress, 500);
   const {
     data: tokenInfo,
     isLoading: loadingTokenInfo,
     isError: tokenInfoError,
-  } = useTokenInfo(watchedAmounts ? form.watch('tokenAddress') : undefined);
-
+  } = useTokenInfo(debouncedTokenAddress);
   // 2. Calculate Amounts and Totals
   // Use useMemo to optimize calculations
   // This prevents unnecessary recalculations on every render
@@ -85,10 +90,14 @@ export default function AirdropForm(): JSX.Element {
     () => calculateTotalWei(amountList),
     [amountList],
   );
-  const totalTokens: string = useMemo(
-    () => calculateTotalTokens(totalAmountInWei, 18),
-    [totalAmountInWei],
-  );
+  // const totalTokens: string = useMemo(
+  //   () => calculateTotalTokens(totalAmountInWei, 18),
+  //   [totalAmountInWei],
+  // );
+  const totalTokens: string = useMemo(() => {
+    const decimals = tokenInfo?.decimals ?? 18;
+    return calculateTotalTokens(totalAmountInWei, decimals);
+  }, [totalAmountInWei, tokenInfo?.decimals]);
 
   const { approveToken, isApproving, approveError } = useApproveToken();
 
