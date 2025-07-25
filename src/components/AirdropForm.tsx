@@ -3,7 +3,6 @@
 
 import { JSX, useMemo, useState } from 'react';
 import { chainsToTSender } from '@/constans';
-import { parseBigIntList, parseList } from '@/parseInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -15,9 +14,11 @@ import {
   calculateTotalTokens,
   calculateTotalWei,
 } from '@/lib/calculateTotal';
+import { parseBigIntList, parseList } from '@/lib/parseInput';
 import { useAirdrop } from '@/hooks/useAirdrop';
 import { useAllowance } from '@/hooks/useAllowance';
 import { useApproveToken } from '@/hooks/useApproveToken';
+import { useTokenInfo } from '@/hooks/useTokenInfo';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -67,6 +68,15 @@ export default function AirdropForm(): JSX.Element {
     control: form.control,
     name: 'amounts',
   });
+  const {
+    data: tokenInfo,
+    isLoading: loadingTokenInfo,
+    isError: tokenInfoError,
+  } = useTokenInfo(watchedAmounts ? form.watch('tokenAddress') : undefined);
+
+  // 2. Calculate Amounts and Totals
+  // Use useMemo to optimize calculations
+  // This prevents unnecessary recalculations on every render
   const amountList = useMemo(
     () => calculateAmountList(watchedAmounts),
     [watchedAmounts],
@@ -102,13 +112,8 @@ export default function AirdropForm(): JSX.Element {
     console.log('💰 Total Amount In Wei:', total.toString());
     console.log('💸 Total Tokens:', totalTokens);
 
-    //  1  Check the current token allowance: Read the amount the user (token owner) has already approved for our airdrop contract (spender).
-
-    // 2 Request approval if needed: If the current allowance is less than the total amount required for the airdrop, prompt the user to execute an approve transaction.
-
-    // 3 Execute the airdrop: Once sufficient allowance is confirmed, call the function on the airdrop contract to perform the token transfers.
     try {
-      // 🟢 Step 1: check allowance + approve if needed
+      // 🟢 Step 1: check Allowance + Approve if needed
       console.log('🟢🟢🟢 [Step 1] Checking token allowance...');
       const approvedAmount = await getAllowance();
 
@@ -279,9 +284,30 @@ export default function AirdropForm(): JSX.Element {
             </fieldset>
 
             <div className="bg-muted space-y-2 rounded-lg border p-4">
-              <h2 className="text-sm font-medium text-zinc-600">
+              <h2 className="text-md font-semibold text-zinc-600">
                 Transaction Details
               </h2>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-600">Token Name:</span>
+                <span className="text-right font-mono">
+                  {loadingTokenInfo
+                    ? 'Loading...'
+                    : tokenInfo?.name ||
+                      (tokenInfoError ? 'Invalid Token' : '—')}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-600">Symbol:</span>
+                <span className="text-right font-mono">
+                  {tokenInfo?.symbol || '—'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-zinc-600">Decimals:</span>
+                <span className="text-right font-mono">
+                  {tokenInfo?.decimals ?? '—'}
+                </span>
+              </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-zinc-600">Amount (wei):</span>
                 <span className="text-right font-mono">
@@ -296,10 +322,10 @@ export default function AirdropForm(): JSX.Element {
 
             <Button
               type="submit"
-              className="w-full"
+              className="w-full p-4 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isApproving || isSending || isSubmitting}
             >
-              {isApproving && 'Approving...'}
+              {isApproving && 'Approving spending allowance...'}
               {isSending && 'Sending...'}
               {!isApproving && !isSending && 'Send Tokens'}
             </Button>
